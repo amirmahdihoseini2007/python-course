@@ -1,0 +1,1498 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>پایتون از صفر تا حرفه‌ای</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0f1a;
+    --bg-alt:#0f1524;
+    --panel:#121a2b;
+    --panel-2:#161f34;
+    --border:rgba(255,255,255,.08);
+    --border-2:rgba(255,255,255,.14);
+    --text:#e7eaf0;
+    --text-dim:#93a0b4;
+    --text-dim2:#5f6c82;
+    --blue:#4B8BBE;
+    --blue-bright:#6fb3e8;
+    --yellow:#FFD43B;
+    --yellow-dim:#c9a52f;
+    --green:#7ec699;
+    --red:#e88585;
+    --code-bg:#080b13;
+    --radius:14px;
+    --serif: 'Vazirmatn', sans-serif;
+    --mono: 'Fira Code', 'Courier New', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:
+      radial-gradient(1200px 700px at 85% -10%, rgba(75,139,190,.14), transparent 60%),
+      radial-gradient(900px 600px at -10% 20%, rgba(255,212,59,.06), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:var(--serif);
+    line-height:1.9;
+    font-size:16px;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit; text-decoration:none;}
+
+  /* ===== Layout ===== */
+  .shell{display:flex; min-height:100vh;}
+  .sidebar{
+    width:290px; min-width:290px;
+    background:linear-gradient(180deg, var(--panel), var(--bg-alt));
+    border-left:1px solid var(--border);
+    padding:28px 22px 40px;
+    position:sticky; top:0; height:100vh; overflow-y:auto;
+  }
+  .brand{display:flex; align-items:center; gap:10px; margin-bottom:6px;}
+  .brand-mark{
+    width:34px; height:34px; border-radius:9px;
+    background:conic-gradient(from 220deg, var(--blue), var(--yellow), var(--blue));
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--mono); font-weight:600; color:#0b0f1a; font-size:14px;
+    flex-shrink:0;
+  }
+  .brand-title{font-size:17px; font-weight:700; color:var(--text);}
+  .brand-sub{font-size:12px; color:var(--text-dim2); margin-bottom:26px; letter-spacing:.02em;}
+
+  .navlist{list-style:none; display:flex; flex-direction:column; gap:2px;}
+  .navlist a{
+    display:flex; align-items:baseline; gap:10px;
+    padding:9px 10px; border-radius:9px;
+    font-size:13.5px; color:var(--text-dim);
+    transition:background .15s, color .15s;
+    border-right:2px solid transparent;
+  }
+  .navlist a:hover{background:rgba(255,255,255,.04); color:var(--text);}
+  .navlist a.active{background:rgba(75,139,190,.14); color:var(--blue-bright); border-right-color:var(--blue);}
+  .navlist .num{font-family:var(--mono); font-size:11px; color:var(--text-dim2); min-width:16px;}
+
+  .content{flex:1; min-width:0; padding:0;}
+
+  /* ===== Hero ===== */
+  .hero{
+    padding:90px 64px 70px;
+    border-bottom:1px solid var(--border);
+    position:relative; overflow:hidden;
+  }
+  .hero::before{
+    content:"";
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 700px 400px at 75% 20%, black, transparent);
+    opacity:.5;
+  }
+  .hero-eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:var(--mono); font-size:12.5px; color:var(--yellow-dim);
+    background:rgba(255,212,59,.08); border:1px solid rgba(255,212,59,.2);
+    padding:6px 14px; border-radius:100px; margin-bottom:26px; position:relative;
+  }
+  .hero h1{
+    font-size:52px; font-weight:800; line-height:1.35; letter-spacing:-.01em;
+    max-width:820px; position:relative; margin-bottom:22px;
+  }
+  .hero h1 .hl{color:var(--blue-bright);}
+  .hero p{font-size:17px; color:var(--text-dim); max-width:640px; position:relative;}
+  .hero-stats{display:flex; gap:36px; margin-top:40px; flex-wrap:wrap; position:relative;}
+  .stat b{display:block; font-size:26px; font-family:var(--mono); color:var(--yellow); font-weight:600;}
+  .stat span{font-size:12.5px; color:var(--text-dim2);}
+
+  /* ===== Sections ===== */
+  section.topic{
+    padding:64px 64px 20px;
+    border-bottom:1px solid var(--border);
+    max-width:980px;
+  }
+  .topic-head{display:flex; align-items:center; gap:16px; margin-bottom:8px;}
+  .topic-idx{
+    font-family:var(--mono); font-size:13px; color:var(--bg);
+    background:var(--yellow); width:32px; height:32px; border-radius:8px;
+    display:flex; align-items:center; justify-content:center; font-weight:700; flex-shrink:0;
+  }
+  .topic h2{font-size:29px; font-weight:700;}
+  .topic-desc{color:var(--text-dim); font-size:15.5px; margin:14px 0 30px; max-width:680px;}
+
+  h3.sub{font-size:19px; font-weight:600; margin:34px 0 12px; color:var(--blue-bright); display:flex; align-items:center; gap:10px;}
+  h3.sub::before{content:""; width:5px; height:18px; background:var(--blue); border-radius:3px; display:inline-block;}
+  p.body-text{margin-bottom:14px; color:#d3d8e2; font-size:15.5px;}
+  ul.points{margin:12px 0 18px; padding-right:22px; display:flex; flex-direction:column; gap:6px;}
+  ul.points li{color:#d3d8e2; font-size:15.5px;}
+  ul.points b{color:var(--text);}
+
+  .tip{
+    background:rgba(126,198,153,.08); border:1px solid rgba(126,198,153,.25);
+    border-radius:10px; padding:14px 18px; margin:18px 0; font-size:14.5px; color:#bfe3cd;
+    display:flex; gap:10px;
+  }
+  .tip::before{content:"💡"; flex-shrink:0;}
+  .warn{
+    background:rgba(232,133,133,.08); border:1px solid rgba(232,133,133,.25);
+    border-radius:10px; padding:14px 18px; margin:18px 0; font-size:14.5px; color:#f0b8b8;
+    display:flex; gap:10px;
+  }
+  .warn::before{content:"⚠️"; flex-shrink:0;}
+
+  /* ===== Code blocks ===== */
+  .code-wrap{
+    background:var(--code-bg); border:1px solid var(--border-2);
+    border-radius:12px; margin:16px 0 24px; overflow:hidden;
+  }
+  .code-bar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:9px 16px; background:var(--panel-2); border-bottom:1px solid var(--border);
+  }
+  .code-bar .dots{display:flex; gap:6px;}
+  .code-bar .dots span{width:9px; height:9px; border-radius:50%; background:#3a4256;}
+  .code-bar .fname{font-family:var(--mono); font-size:12px; color:var(--text-dim2);}
+  pre{
+    padding:18px 20px; overflow-x:auto; direction:ltr; text-align:left;
+    font-family:var(--mono); font-size:13.5px; line-height:1.75;
+  }
+  code{font-family:var(--mono);}
+  .c-kw{color:var(--blue-bright);}
+  .c-str{color:var(--green);}
+  .c-com{color:var(--text-dim2); font-style:italic;}
+  .c-num{color:var(--yellow);}
+  .c-fn{color:#d8b4fe;}
+  .c-out{color:var(--text-dim);}
+
+  .out-block{
+    background:#05070c; border-top:1px dashed var(--border-2);
+    padding:12px 20px; font-family:var(--mono); font-size:12.5px; color:var(--text-dim);
+    direction:ltr; text-align:left;
+  }
+  .out-block .out-label{color:var(--text-dim2); font-size:10.5px; letter-spacing:.08em; display:block; margin-bottom:6px;}
+
+  /* two-col grid for comparisons */
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:18px; margin:18px 0;}
+  @media(max-width:720px){.grid2{grid-template-columns:1fr;}}
+  .card{background:var(--panel); border:1px solid var(--border); border-radius:12px; padding:18px 20px;}
+  .card h4{font-size:14.5px; color:var(--yellow); margin-bottom:8px; font-family:var(--mono);}
+
+  table.tbl{width:100%; border-collapse:collapse; margin:16px 0 26px; font-size:14.5px;}
+  table.tbl th, table.tbl td{border:1px solid var(--border); padding:10px 14px; text-align:right;}
+  table.tbl th{background:var(--panel-2); color:var(--yellow-dim); font-weight:600; font-size:13px;}
+  table.tbl td{color:#d3d8e2;}
+  table.tbl code{color:var(--blue-bright); font-size:13px;}
+
+  /* ===== keyword legend ===== */
+  .legend{
+    background:var(--panel); border:1px solid var(--border);
+    border-radius:12px; margin:-10px 0 26px; overflow:hidden;
+  }
+  .legend-head{
+    padding:10px 18px; font-size:12px; color:var(--yellow-dim);
+    background:var(--panel-2); border-bottom:1px solid var(--border);
+    font-family:var(--mono); letter-spacing:.02em;
+  }
+  .legend-rows{display:flex; flex-direction:column;}
+  .legend-row{
+    display:flex; gap:16px; padding:11px 18px;
+    border-bottom:1px solid var(--border); align-items:baseline;
+  }
+  .legend-row:last-child{border-bottom:none;}
+  .legend-term{
+    font-family:var(--mono); font-size:13.5px; color:var(--blue-bright);
+    background:rgba(75,139,190,.1); border:1px solid rgba(75,139,190,.25);
+    border-radius:6px; padding:2px 9px; flex-shrink:0; min-width:92px; text-align:center;
+    white-space:nowrap;
+  }
+  .legend-desc{font-size:14px; color:#d3d8e2; line-height:1.7;}
+  @media(max-width:640px){
+    .legend-row{flex-direction:column; gap:6px;}
+    .legend-term{min-width:0; display:inline-block;}
+  }
+
+  footer{padding:60px 64px 90px; color:var(--text-dim2); font-size:13.5px; max-width:980px;}
+  footer .fline{height:1px; background:var(--border); margin-bottom:30px;}
+
+  @media(max-width:900px){
+    .shell{flex-direction:column;}
+    .sidebar{position:relative; width:100%; height:auto; min-width:0;}
+    .hero, section.topic, footer{padding-left:24px; padding-right:24px;}
+    .hero h1{font-size:34px;}
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <!-- ===================== SIDEBAR ===================== -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">Py</div>
+      <div class="brand-title">دوره کامل پایتون</div>
+    </div>
+    <div class="brand-sub">۱۵ فصل، از صفر تا آماده‌ی پروژه واقعی</div>
+    <ul class="navlist" id="navlist">
+      <li><a href="#s1"><span class="num">۰۱</span> پیش‌نیاز و درک برنامه‌نویسی</a></li>
+      <li><a href="#s2"><span class="num">۰۲</span> شروع برنامه‌نویسی</a></li>
+      <li><a href="#s3"><span class="num">۰۳</span> مدیریت شروط و حلقه‌ها</a></li>
+      <li><a href="#s4"><span class="num">۰۴</span> دیگر مدل‌های داده و عملیات</a></li>
+      <li><a href="#s5"><span class="num">۰۵</span> توابع و ماژول</a></li>
+      <li><a href="#s6"><span class="num">۰۶</span> مدیریت پکیج و ماژول‌ها</a></li>
+      <li><a href="#s7"><span class="num">۰۷</span> مدیریت خطا</a></li>
+      <li><a href="#s8"><span class="num">۰۸</span> مدیریت فایل با پایتون</a></li>
+      <li><a href="#s9"><span class="num">۰۹</span> ساختارهای تابع‌گرا</a></li>
+      <li><a href="#s10"><span class="num">۱۰</span> شئ‌گرایی در پایتون</a></li>
+      <li><a href="#s11"><span class="num">۱۱</span> ایزوله‌سازی محیط توسعه</a></li>
+      <li><a href="#s12"><span class="num">۱۲</span> ارتباط با وب و مدیریت درخواست</a></li>
+      <li><a href="#s13"><span class="num">۱۳</span> آشنایی با Clean Code</a></li>
+      <li><a href="#s14"><span class="num">۱۴</span> ماژول‌های پرکاربرد</a></li>
+      <li><a href="#s15"><span class="num">۱۵</span> توضیحات تکمیلی</a></li>
+    </ul>
+  </aside>
+
+  <!-- ===================== MAIN CONTENT ===================== -->
+  <main class="content">
+
+    <div class="hero">
+      <div class="hero-eyebrow">&#9679; مسیر یادگیری پایتون</div>
+      <h1>پایتون را از <span class="hl">صفر</span> با درک واقعی یاد بگیر، نه فقط حفظ سینتکس</h1>
+      <p>این مرجع، ۱۵ فصل اصلی برنامه‌نویسی پایتون را با توضیح مفهومی، مثال‌های کد اجراشده و نکات کاربردی پوشش می‌دهد. هر فصل را می‌توانی جدا بخوانی یا از اول تا آخر پیش بروی.</p>
+      <div class="hero-stats">
+        <div class="stat"><b>۱۵</b><span>فصل اصلی</span></div>
+        <div class="stat"><b>۶۰+</b><span>مثال کد</span></div>
+        <div class="stat"><b>۰ تا حرفه‌ای</b><span>سطح دوره</span></div>
+      </div>
+    </div>
+
+    <!-- ===================== 1 ===================== -->
+    <section class="topic" id="s1">
+      <div class="topic-head"><div class="topic-idx">۱</div><h2>پیش‌نیاز و درک برنامه‌نویسی</h2></div>
+      <p class="topic-desc">قبل از نوشتن حتی یک خط کد، باید بفهمی کامپیوتر اصلاً چطور «فکر می‌کند» و برنامه‌نویسی یعنی چه. این فصل پایه‌ی ذهنی لازم را می‌سازد.</p>
+
+      <h3 class="sub">کامپیوتر چطور کار می‌کند؟</h3>
+      <p class="body-text">کامپیوتر در اصل ماشینی است که فقط دو حالت می‌فهمد: روشن (۱) و خاموش (۰). هر چیزی که روی صفحه می‌بینی — متن، عکس، بازی — در پایین‌ترین لایه به رشته‌ای از صفر و یک (باینری) تبدیل شده است. پردازنده (CPU) این صفر و یک‌ها را به‌عنوان دستورالعمل می‌خواند و اجرا می‌کند.</p>
+      <p class="body-text">نوشتن مستقیم صفر و یک برای انسان غیرممکن است، پس زبان‌های برنامه‌نویسی به‌وجود آمدند: زبانی نزدیک به زبان انسانی که بعداً توسط یک «مترجم» به زبان ماشین تبدیل می‌شود.</p>
+
+      <h3 class="sub">برنامه‌نویسی یعنی چه؟</h3>
+      <p class="body-text">برنامه‌نویسی یعنی نوشتن مجموعه‌ای از دستورالعمل‌های دقیق و مرحله‌به‌مرحله برای حل یک مسئله. مهم‌ترین مهارت یک برنامه‌نویس، توانایی «تجزیه‌ی مسئله» است: گرفتن یک مسئله‌ی بزرگ و شکستن آن به قدم‌های کوچک و قابل‌اجرا — که به آن <b>الگوریتم</b> می‌گویند.</p>
+      <div class="tip">مثال ساده‌ی الگوریتم: «درست کردن چای» = آب را بریز در کتری، کتری را روشن کن، صبر کن تا بجوشد، چای‌کیسه را در لیوان بگذار، آب جوش را روی آن بریز، ۳ دقیقه صبر کن. همین ساختار قدم‌به‌قدم، دقیقاً همان چیزی است که در کد می‌نویسیم.</div>
+
+      <h3 class="sub">چرا پایتون؟</h3>
+      <ul class="points">
+        <li><b>خوانایی بالا</b> — سینتکس پایتون شبیه جملات انگلیسی ساده است.</li>
+        <li><b>همه‌کاره</b> — از توسعه وب و علم داده تا هوش مصنوعی و اسکریپت‌نویسی خودکارسازی.</li>
+        <li><b>جامعه‌ی بزرگ</b> — کتابخانه‌ها و مستندات فراوان برای هر مسئله‌ای.</li>
+        <li><b>زبان تفسیری (Interpreted)</b> — کد را خط‌به‌خط اجرا می‌کند، بدون نیاز به کامپایل جداگانه.</li>
+      </ul>
+
+      <h3 class="sub">کد منبع، مفسر و کامپایلر</h3>
+      <div class="grid2">
+        <div class="card">
+          <h4>Compiled Language</h4>
+          <p class="body-text" style="margin:0;">کل کد یک‌جا به زبان ماشین ترجمه و به یک فایل اجرایی تبدیل می‌شود (مثل C++‎). سریع‌تر اجرا می‌شود اما مرحله‌ی کامپایل جدا دارد.</p>
+        </div>
+        <div class="card">
+          <h4>Interpreted Language</h4>
+          <p class="body-text" style="margin:0;">کد خط‌به‌خط توسط مفسر (interpreter) خوانده و اجرا می‌شود؛ پایتون از همین دسته است. توسعه سریع‌تر، اما اجرا کمی کندتر از زبان‌های کامپایل‌شده.</p>
+        </div>
+      </div>
+
+      <h3 class="sub">اولین قدم عملی: نصب و اجرا</h3>
+      <p class="body-text">پایتون را از سایت رسمی <code style="color:var(--blue-bright)">python.org</code> نصب کن. بعد از نصب، در ترمینال دستور زیر را بزن تا نسخه را ببینی:</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">terminal</span></div>
+        <pre>python <span class="c-flag">--version</span>
+<span class="c-com"># خروجی چیزی شبیه این است:</span>
+<span class="c-out">Python 3.12.4</span></pre>
+      </div>
+      <p class="body-text">دو راه اصلی برای اجرای کد پایتون داری: حالت <b>تعاملی (REPL)</b> که با تایپ <code style="color:var(--blue-bright)">python</code> باز می‌شود و هر خط را فوری اجرا می‌کند، یا نوشتن کد در یک فایل با پسوند <code style="color:var(--blue-bright)">.py</code> و اجرای آن با <code style="color:var(--blue-bright)">python file.py</code>.</p>
+    </section>
+
+    <!-- ===================== 2 ===================== -->
+    <section class="topic" id="s2">
+      <div class="topic-head"><div class="topic-idx">۲</div><h2>شروع برنامه‌نویسی</h2></div>
+      <p class="topic-desc">اولین خط‌های کد واقعی: چاپ کردن متن، متغیرها، انواع داده‌ی پایه و نحوه‌ی گرفتن ورودی از کاربر.</p>
+
+      <h3 class="sub">اولین برنامه: Hello, World!</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">hello.py</span></div>
+        <pre><span class="c-fn">print</span>(<span class="c-str">"سلام دنیا!"</span>)</pre>
+        <div class="out-block"><span class="out-label">OUTPUT</span>سلام دنیا!</div>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">print()</span><span class="legend-desc">یک تابع آماده (built-in) در پایتون که هرچیزی داخل پرانتزش را روی خروجی (صفحه‌ی ترمینال) چاپ می‌کند. تقریباً در همه‌ی برنامه‌ها برای نمایش نتیجه استفاده می‌شود.</span></div>
+          <div class="legend-row"><span class="legend-term">"..."</span><span class="legend-desc">هرچیزی داخل گیومه (تک یا دوتایی) یک <b>رشته (string)</b> است، یعنی متن. پایتون آن را عیناً همان‌طور که نوشته‌ای نمایش می‌دهد.</span></div>
+        </div>
+      </div>
+
+      <h3 class="sub">متغیرها (Variables)</h3>
+      <p class="body-text">متغیر یک «نام‌گذاری» برای یک مقدار در حافظه است. در پایتون نیازی به تعریف نوع داده نداری — پایتون خودش نوع را از روی مقدار تشخیص می‌دهد (Dynamic Typing).</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">variables.py</span></div>
+        <pre>name = <span class="c-str">"سارا"</span>       <span class="c-com"># رشته (str)</span>
+age = <span class="c-num">28</span>              <span class="c-com"># عدد صحیح (int)</span>
+height = <span class="c-num">1.68</span>         <span class="c-com"># عدد اعشاری (float)</span>
+is_student = <span class="c-kw">False</span>     <span class="c-com"># بولین (bool)</span>
+
+<span class="c-fn">print</span>(name, age, height, is_student)
+<span class="c-fn">print</span>(<span class="c-fn">type</span>(age))    <span class="c-com"># نوع داده رو نشون میده</span></pre>
+        <div class="out-block"><span class="out-label">OUTPUT</span>سارا 28 1.68 False
+&lt;class 'int'&gt;</div>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">=</span><span class="legend-desc">علامت مساوی در برنامه‌نویسی به‌معنی «برابری ریاضی» نیست، بلکه یعنی <b>انتساب (assignment)</b>: مقدار سمت راست را داخل متغیر سمت چپ می‌ریزد. یعنی <code style="color:var(--blue-bright)">name = "سارا"</code> یعنی «مقدار سارا را در متغیری به نام name ذخیره کن».</span></div>
+          <div class="legend-row"><span class="legend-term"># ...</span><span class="legend-desc">هر چیزی بعد از علامت <code style="color:var(--blue-bright)">#</code> یک <b>کامنت (comment)</b> است؛ پایتون آن را نادیده می‌گیرد. کامنت فقط برای توضیح دادن به خودت یا بقیه است.</span></div>
+          <div class="legend-row"><span class="legend-term">type()</span><span class="legend-desc">تابعی که نوع داده‌ی یک مقدار را برمی‌گرداند؛ مثلاً می‌فهمی متغیری عدد صحیح (int) است یا رشته (str).</span></div>
+          <div class="legend-row"><span class="legend-term">,</span><span class="legend-desc">داخل <code style="color:var(--blue-bright)">print()</code> می‌توانی چند مقدار را با کاما جدا کنی؛ پایتون آن‌ها را با یک فاصله از هم چاپ می‌کند.</span></div>
+        </div>
+      </div>
+      <div class="tip">قانون نام‌گذاری متغیر: فقط حروف، عدد و آندرلاین (<code style="color:var(--blue-bright)">_</code>)، نباید با عدد شروع شود، و به بزرگ/کوچک بودن حروف حساس است (<code style="color:var(--blue-bright)">age</code> با <code style="color:var(--blue-bright)">Age</code> فرق دارد). طبق قرارداد پایتون از <code style="color:var(--blue-bright)">snake_case</code> استفاده می‌شود.</div>
+
+      <h3 class="sub">انواع داده‌ی پایه</h3>
+      <table class="tbl">
+        <tr><th>نوع</th><th>مثال</th><th>توضیح</th></tr>
+        <tr><td><code>int</code></td><td><code>10</code></td><td>عدد صحیح، بدون اعشار</td></tr>
+        <tr><td><code>float</code></td><td><code>3.14</code></td><td>عدد اعشاری</td></tr>
+        <tr><td><code>str</code></td><td><code>"سلام"</code></td><td>رشته‌ی متنی</td></tr>
+        <tr><td><code>bool</code></td><td><code>True</code> / <code>False</code></td><td>مقدار منطقی</td></tr>
+        <tr><td><code>NoneType</code></td><td><code>None</code></td><td>نبود مقدار</td></tr>
+      </table>
+
+      <h3 class="sub">عملگرها (Operators)</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">operators.py</span></div>
+        <pre>a, b = <span class="c-num">10</span>, <span class="c-num">3</span>
+
+<span class="c-fn">print</span>(a + b)   <span class="c-com"># جمع → 13</span>
+<span class="c-fn">print</span>(a - b)   <span class="c-com"># تفریق → 7</span>
+<span class="c-fn">print</span>(a * b)   <span class="c-com"># ضرب → 30</span>
+<span class="c-fn">print</span>(a / b)   <span class="c-com"># تقسیم اعشاری → 3.333...</span>
+<span class="c-fn">print</span>(a // b)  <span class="c-com"># تقسیم صحیح → 3</span>
+<span class="c-fn">print</span>(a % b)   <span class="c-com"># باقیمانده → 1</span>
+<span class="c-fn">print</span>(a ** b)  <span class="c-com"># توان → 1000</span></pre>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">a, b = 10, 3</span><span class="legend-desc">پایتون اجازه می‌دهد چند متغیر را در یک خط، همزمان مقداردهی کنی — به این کار می‌گویند unpacking.</span></div>
+          <div class="legend-row"><span class="legend-term">// و %</span><span class="legend-desc"><code style="color:var(--blue-bright)">//</code> فقط قسمت صحیح تقسیم را می‌دهد (بدون اعشار)، و <code style="color:var(--blue-bright)">%</code> باقیمانده‌ی تقسیم را برمی‌گرداند — خیلی در چک کردن زوج/فرد بودن اعداد کاربرد دارد.</span></div>
+        </div>
+      </div>
+
+      <h3 class="sub">گرفتن ورودی از کاربر و تبدیل نوع (Casting)</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">input_demo.py</span></div>
+        <pre>name = <span class="c-fn">input</span>(<span class="c-str">"اسمت چیه؟ "</span>)
+age_text = <span class="c-fn">input</span>(<span class="c-str">"سنت چنده؟ "</span>)
+age = <span class="c-fn">int</span>(age_text)   <span class="c-com"># input همیشه رشته برمی‌گردونه، پس تبدیلش می‌کنیم</span>
+
+<span class="c-fn">print</span>(<span class="c-fn">f</span><span class="c-str">f"سلام {name}! سال بعد {age + 1} ساله می‌شی."</span>)</pre>
+        <div class="out-block"><span class="out-label">OUTPUT (نمونه)</span>اسمت چیه؟ سارا
+سنت چنده؟ 27
+سلام سارا! سال بعد 28 ساله می‌شی.</div>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">input()</span><span class="legend-desc">تابعی که برنامه را متوقف می‌کند تا کاربر چیزی تایپ کند و اینتر بزند؛ هر چه کاربر بنویسد، همیشه به‌صورت <b>رشته (str)</b> برگردانده می‌شود، حتی اگر عدد تایپ کرده باشد.</span></div>
+          <div class="legend-row"><span class="legend-term">int()</span><span class="legend-desc">تابعی برای تبدیل یک مقدار (مثلاً رشته‌ی "27") به عدد صحیح. به این کار <b>Type Casting</b> می‌گویند.</span></div>
+          <div class="legend-row"><span class="legend-term">f"..."</span><span class="legend-desc">یک <b>f-string</b>: با گذاشتن حرف f قبل از گیومه، می‌توانی متغیرها را داخل آکولاد <code style="color:var(--blue-bright)">{}</code> مستقیم در متن جا بدهی؛ خواناتر از چسباندن رشته‌ها با +‌ است.</span></div>
+        </div>
+      </div>
+      <div class="tip"><b>f-string</b> راحت‌ترین روش قرار دادن متغیر داخل رشته است: کافیست قبل از گیومه یک <code style="color:var(--blue-bright)">f</code> بگذاری و متغیر را داخل <code style="color:var(--blue-bright)">{}</code> بنویسی.</div>
+    </section>
+
+    <!-- ===================== 3 ===================== -->
+    <section class="topic" id="s3">
+      <div class="topic-head"><div class="topic-idx">۳</div><h2>مدیریت شروط و حلقه‌ها</h2></div>
+      <p class="topic-desc">اینجاست که برنامه‌ها «هوشمند» می‌شوند: تصمیم‌گیری با شرط‌ها و تکرار کارها با حلقه‌ها.</p>
+
+      <h3 class="sub">دستور شرطی if / elif / else</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">grades.py</span></div>
+        <pre>score = <span class="c-num">78</span>
+
+<span class="c-kw">if</span> score >= <span class="c-num">90</span>:
+    <span class="c-fn">print</span>(<span class="c-str">"عالی"</span>)
+<span class="c-kw">elif</span> score >= <span class="c-num">70</span>:
+    <span class="c-fn">print</span>(<span class="c-str">"خوب"</span>)
+<span class="c-kw">elif</span> score >= <span class="c-num">50</span>:
+    <span class="c-fn">print</span>(<span class="c-str">"قابل قبول"</span>)
+<span class="c-kw">else</span>:
+    <span class="c-fn">print</span>(<span class="c-str">"مردود"</span>)</pre>
+        <div class="out-block"><span class="out-label">OUTPUT</span>خوب</div>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟ (توضیح کامل هر کلمه)</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">if</span><span class="legend-desc">یعنی «اگر». شرط جلوی آن را چک می‌کند؛ اگر درست (True) باشد، فقط بدنه‌ی زیر همان <code style="color:var(--blue-bright)">if</code> اجرا می‌شود.</span></div>
+          <div class="legend-row"><span class="legend-term">elif</span><span class="legend-desc">مخفف «else if»، یعنی «وگرنه اگر». وقتی شرط <code style="color:var(--blue-bright)">if</code> بالا نادرست بود، این شرط جدید را چک می‌کند. می‌توانی هر تعداد <code style="color:var(--blue-bright)">elif</code> که خواستی داشته باشی.</span></div>
+          <div class="legend-row"><span class="legend-term">else</span><span class="legend-desc">یعنی «در غیر این صورت». اگر هیچ‌کدام از شرط‌های بالا درست نبود، این بخش اجرا می‌شود. اختیاری است و همیشه آخرین بخش قرار می‌گیرد.</span></div>
+          <div class="legend-row"><span class="legend-term">>=</span><span class="legend-desc">عملگر مقایسه‌ای «بزرگ‌تر یا مساوی». نتیجه‌ی هر مقایسه همیشه یک مقدار بولین (True یا False) است.</span></div>
+          <div class="legend-row"><span class="legend-term">: و تورفتگی</span><span class="legend-desc">بعد از <code style="color:var(--blue-bright)">if</code>، <code style="color:var(--blue-bright)">elif</code> و <code style="color:var(--blue-bright)">else</code> همیشه دو نقطه <code style="color:var(--blue-bright)">:</code> می‌آید. خط بعدی باید یک فاصله (معمولاً ۴ فاصله) تورفته باشد تا پایتون بفهمد این خط، «داخل» همان شرط است.</span></div>
+        </div>
+      </div>
+      <div class="warn">در پایتون تورفتگی (indentation) جایگزین آکولاد <code>{}</code> در زبان‌های دیگر است. فراموش کردن تورفتگی صحیح باعث خطا می‌شود — این یکی از مهم‌ترین تفاوت‌های پایتون است.</div>
+
+      <h3 class="sub">عملگرهای مقایسه‌ای و منطقی</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">logic.py</span></div>
+        <pre>age = <span class="c-num">22</span>
+has_license = <span class="c-kw">True</span>
+
+<span class="c-kw">if</span> age >= <span class="c-num">18</span> <span class="c-kw">and</span> has_license:
+    <span class="c-fn">print</span>(<span class="c-str">"می‌تونی رانندگی کنی"</span>)
+
+<span class="c-kw">if</span> age < <span class="c-num">13</span> <span class="c-kw">or</span> age > <span class="c-num">65</span>:
+    <span class="c-fn">print</span>(<span class="c-str">"تخفیف ویژه شامل حالت میشه"</span>)
+
+<span class="c-kw">print</span>(<span class="c-kw">not</span> has_license)  <span class="c-com"># False</span></pre>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">and</span><span class="legend-desc">یعنی «و». وقتی دو شرط با <code style="color:var(--blue-bright)">and</code> کنار هم باشند، کل عبارت فقط زمانی True است که <b>هر دو</b> شرط درست باشند.</span></div>
+          <div class="legend-row"><span class="legend-term">or</span><span class="legend-desc">یعنی «یا». کافی است <b>یکی</b> از دو شرط درست باشد تا کل عبارت True شود.</span></div>
+          <div class="legend-row"><span class="legend-term">not</span><span class="legend-desc">نتیجه‌ی یک شرط را برعکس می‌کند؛ True را False و False را True می‌کند.</span></div>
+        </div>
+      </div>
+
+      <h3 class="sub">حلقه‌ی while</h3>
+      <p class="body-text">حلقه‌ی <code style="color:var(--blue-bright)">while</code> تا زمانی که شرط برقرار باشد، بدنه‌ی خودش را تکرار می‌کند.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">countdown.py</span></div>
+        <pre>count = <span class="c-num">5</span>
+<span class="c-kw">while</span> count > <span class="c-num">0</span>:
+    <span class="c-fn">print</span>(count)
+    count -= <span class="c-num">1</span>   <span class="c-com"># معادل count = count - 1</span>
+
+<span class="c-fn">print</span>(<span class="c-str">"پرتاب!"</span>)</pre>
+        <div class="out-block"><span class="out-label">OUTPUT</span>5
+4
+3
+2
+1
+پرتاب!</div>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">while</span><span class="legend-desc">یعنی «تا وقتی که». تا زمانی که شرط جلوی آن True باشد، بدنه‌ی زیرش بارها و بارها تکرار می‌شود. وقتی شرط False شود، حلقه متوقف می‌شود.</span></div>
+          <div class="legend-row"><span class="legend-term">count -= 1</span><span class="legend-desc">معادل کوتاه‌نویسیِ <code style="color:var(--blue-bright)">count = count - 1</code> است؛ یعنی یکی از مقدار count کم کن. مشابه آن <code style="color:var(--blue-bright)">+=</code>، <code style="color:var(--blue-bright)">*=</code> و <code style="color:var(--blue-bright)">/=</code> هم وجود دارد.</span></div>
+          <div class="legend-row"><span class="legend-term">⚠️ نکته</span><span class="legend-desc">اگر شرط حلقه‌ی while هیچ‌وقت False نشود، برنامه برای همیشه اجرا می‌ماند؛ به آن <b>حلقه‌ی بی‌نهایت (infinite loop)</b> می‌گویند. همیشه مطمئن شو داخل حلقه چیزی هست که بالاخره شرط را نادرست می‌کند.</span></div>
+        </div>
+      </div>
+
+      <h3 class="sub">حلقه‌ی for</h3>
+      <p class="body-text">حلقه‌ی <code style="color:var(--blue-bright)">for</code> برای پیمایش روی مجموعه‌ها (لیست، رشته، رنج و...) استفاده می‌شود.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">for_loops.py</span></div>
+        <pre>fruits = [<span class="c-str">"سیب"</span>, <span class="c-str">"موز"</span>, <span class="c-str">"پرتقال"</span>]
+<span class="c-kw">for</span> fruit <span class="c-kw">in</span> fruits:
+    <span class="c-fn">print</span>(<span class="c-fn">f</span><span class="c-str">f"من {fruit} دوست دارم"</span>)
+
+<span class="c-com"># range(start, stop, step)</span>
+<span class="c-kw">for</span> i <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">1</span>, <span class="c-num">6</span>):
+    <span class="c-fn">print</span>(<span class="c-fn">f</span><span class="c-str">f"مرحله {i}"</span>)</pre>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">for</span><span class="legend-desc">یعنی «برای هر». برای پیمایش (رفتن روی تک‌تک اعضای) یک مجموعه مثل لیست، رشته یا رنج استفاده می‌شود.</span></div>
+          <div class="legend-row"><span class="legend-term">in</span><span class="legend-desc">همراه <code style="color:var(--blue-bright)">for</code> می‌آید و یعنی «داخل». مشخص می‌کند از کدام مجموعه عضوها را یکی‌یکی برداریم.</span></div>
+          <div class="legend-row"><span class="legend-term">range()</span><span class="legend-desc">دنباله‌ای از اعداد صحیح می‌سازد. <code style="color:var(--blue-bright)">range(1, 6)</code> یعنی از ۱ شروع کن تا قبل از ۶ (یعنی ۱ تا ۵).</span></div>
+        </div>
+      </div>
+
+      <h3 class="sub">کنترل حلقه: break ،continue و else</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">loop_control.py</span></div>
+        <pre><span class="c-kw">for</span> num <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">1</span>, <span class="c-num">10</span>):
+    <span class="c-kw">if</span> num == <span class="c-num">5</span>:
+        <span class="c-kw">break</span>       <span class="c-com"># کاملاً از حلقه خارج می‌شه</span>
+    <span class="c-kw">if</span> num % <span class="c-num">2</span> == <span class="c-num">0</span>:
+        <span class="c-kw">continue</span>    <span class="c-com"># این تکرار رو رد می‌کنه، ادامه میده</span>
+    <span class="c-fn">print</span>(num)</pre>
+        <div class="out-block"><span class="out-label">OUTPUT</span>1
+3</div>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">==</span><span class="legend-desc">عملگر «برابری» است، با علامت انتساب <code style="color:var(--blue-bright)">=</code> اشتباه نگیر. <code style="color:var(--blue-bright)">==</code> فقط مقایسه می‌کند و نتیجه‌اش True یا False است.</span></div>
+          <div class="legend-row"><span class="legend-term">break</span><span class="legend-desc">یعنی «بشکن». به‌محض رسیدن به این خط، پایتون فوراً از کل حلقه خارج می‌شود، حتی اگر هنوز اعضای دیگری باقی مانده باشد.</span></div>
+          <div class="legend-row"><span class="legend-term">continue</span><span class="legend-desc">یعنی «ادامه بده». باقی‌ی کدهای این دور از حلقه را نادیده می‌گیرد و مستقیم می‌رود سراغ عضو بعدی — بدون این‌که از حلقه خارج شود.</span></div>
+        </div>
+      </div>
+
+      <h3 class="sub">حلقه‌های تودرتو (Nested Loops)</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">nested.py</span></div>
+        <pre><span class="c-kw">for</span> row <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">1</span>, <span class="c-num">4</span>):
+    <span class="c-kw">for</span> col <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">1</span>, <span class="c-num">4</span>):
+        <span class="c-fn">print</span>(<span class="c-fn">f</span><span class="c-str">f"({row},{col})"</span>, end=<span class="c-str">" "</span>)
+    <span class="c-fn">print</span>()  <span class="c-com"># رفتن به خط بعد</span></pre>
+      </div>
+    </section>
+
+    <!-- ===================== 4 ===================== -->
+    <section class="topic" id="s4">
+      <div class="topic-head"><div class="topic-idx">۴</div><h2>دیگر مدل‌های داده و عملیات</h2></div>
+      <p class="topic-desc">لیست، تاپل، دیکشنری و مجموعه — چهار ساختار داده‌ای که تقریباً در هر برنامه‌ی پایتونی استفاده می‌شوند.</p>
+
+      <h3 class="sub">لیست (List) — قابل تغییر و مرتب</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">lists.py</span></div>
+        <pre>numbers = [<span class="c-num">4</span>, <span class="c-num">8</span>, <span class="c-num">15</span>, <span class="c-num">16</span>]
+
+numbers.append(<span class="c-num">23</span>)        <span class="c-com"># افزودن به انتها</span>
+numbers.insert(<span class="c-num">0</span>, <span class="c-num">1</span>)     <span class="c-com"># افزودن در ایندکس مشخص</span>
+numbers.remove(<span class="c-num">8</span>)          <span class="c-com"># حذف مقدار مشخص</span>
+numbers.sort()               <span class="c-com"># مرتب‌سازی صعودی</span>
+
+<span class="c-fn">print</span>(numbers)
+<span class="c-fn">print</span>(numbers[<span class="c-num">0</span>])       <span class="c-com"># اولین عضو</span>
+<span class="c-fn">print</span>(numbers[-<span class="c-num">1</span>])      <span class="c-com"># آخرین عضو</span>
+<span class="c-fn">print</span>(numbers[<span class="c-num">1</span>:<span class="c-num">3</span>])     <span class="c-com"># اسلایس: از ایندکس 1 تا قبل از 3</span></pre>
+        <div class="out-block"><span class="out-label">OUTPUT</span>[1, 4, 15, 16, 23]
+1
+23
+[4, 15]</div>
+      </div>
+
+      <h3 class="sub">تاپل (Tuple) — غیرقابل‌تغییر</h3>
+      <p class="body-text">تاپل مثل لیست است اما بعد از ساخته شدن نمی‌توان آن را تغییر داد (Immutable). برای داده‌هایی که نباید تغییر کنند، مثل مختصات یا رنگ RGB، ایده‌آل است.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">tuples.py</span></div>
+        <pre>point = (<span class="c-num">10</span>, <span class="c-num">20</span>)
+x, y = point   <span class="c-com"># unpacking</span>
+<span class="c-fn">print</span>(<span class="c-fn">f</span><span class="c-str">f"x={x}, y={y}"</span>)
+
+<span class="c-com"># point[0] = 5  ← این خط خطا می‌ده چون تاپل تغییرناپذیره</span></pre>
+      </div>
+
+      <h3 class="sub">دیکشنری (Dictionary) — جفت کلید/مقدار</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">dicts.py</span></div>
+        <pre>person = {
+    <span class="c-str">"name"</span>: <span class="c-str">"علی"</span>,
+    <span class="c-str">"age"</span>: <span class="c-num">31</span>,
+    <span class="c-str">"skills"</span>: [<span class="c-str">"Python"</span>, <span class="c-str">"SQL"</span>]
+}
+
+<span class="c-fn">print</span>(person[<span class="c-str">"name"</span>])
+person[<span class="c-str">"city"</span>] = <span class="c-str">"تهران"</span>     <span class="c-com"># افزودن کلید جدید</span>
+person.get(<span class="c-str">"job"</span>, <span class="c-str">"نامشخص"</span>)  <span class="c-com"># مقدار پیش‌فرض اگه کلید نبود</span>
+
+<span class="c-kw">for</span> key, value <span class="c-kw">in</span> person.items():
+    <span class="c-fn">print</span>(<span class="c-fn">f</span><span class="c-str">f"{key}: {value}"</span>)</pre>
+      </div>
+
+      <h3 class="sub">مجموعه (Set) — بدون تکرار و بدون ترتیب</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">sets.py</span></div>
+        <pre>a = {<span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">3</span>}
+b = {<span class="c-num">2</span>, <span class="c-num">3</span>, <span class="c-num">4</span>}
+
+<span class="c-fn">print</span>(a | b)   <span class="c-com"># اجتماع → {1, 2, 3, 4}</span>
+<span class="c-fn">print</span>(a & b)   <span class="c-com"># اشتراک → {2, 3}</span>
+<span class="c-fn">print</span>(a - b)   <span class="c-com"># تفاضل → {1}</span></pre>
+      </div>
+
+      <h3 class="sub">مقایسه‌ی سریع ساختارها</h3>
+      <table class="tbl">
+        <tr><th>ساختار</th><th>قابل تغییر؟</th><th>ترتیب دارد؟</th><th>تکرار مجاز؟</th><th>سینتکس</th></tr>
+        <tr><td>List</td><td>بله</td><td>بله</td><td>بله</td><td><code>[1, 2]</code></td></tr>
+        <tr><td>Tuple</td><td>خیر</td><td>بله</td><td>بله</td><td><code>(1, 2)</code></td></tr>
+        <tr><td>Dict</td><td>بله</td><td>بله (از ۳.۷)</td><td>کلید یکتا</td><td><code>{"a": 1}</code></td></tr>
+        <tr><td>Set</td><td>بله</td><td>خیر</td><td>خیر</td><td><code>{1, 2}</code></td></tr>
+      </table>
+
+      <h3 class="sub">List Comprehension</h3>
+      <p class="body-text">یک ابزار بسیار پایتونی برای ساخت لیست جدید در یک خط.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">comprehension.py</span></div>
+        <pre>squares = [x**<span class="c-num">2</span> <span class="c-kw">for</span> x <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">1</span>, <span class="c-num">6</span>)]
+<span class="c-fn">print</span>(squares)   <span class="c-com"># [1, 4, 9, 16, 25]</span>
+
+evens = [x <span class="c-kw">for</span> x <span class="c-kw">in</span> <span class="c-fn">range</span>(<span class="c-num">10</span>) <span class="c-kw">if</span> x % <span class="c-num">2</span> == <span class="c-num">0</span>]
+<span class="c-fn">print</span>(evens)     <span class="c-com"># [0, 2, 4, 6, 8]</span></pre>
+      </div>
+    </section>
+
+    <!-- ===================== 5 ===================== -->
+    <section class="topic" id="s5">
+      <div class="topic-head"><div class="topic-idx">۵</div><h2>توابع و ماژول</h2></div>
+      <p class="topic-desc">توابع به تو اجازه می‌دهند کد را در قطعات قابل‌استفاده‌ی مجدد بسته‌بندی کنی. ماژول‌ها این قطعات را در فایل‌های جدا سازمان‌دهی می‌کنند.</p>
+
+      <h3 class="sub">تعریف و فراخوانی تابع</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">functions.py</span></div>
+        <pre><span class="c-kw">def</span> <span class="c-fn">greet</span>(name):
+    <span class="c-kw">return</span> <span class="c-fn">f</span><span class="c-str">f"سلام {name}!"</span>
+
+message = <span class="c-fn">greet</span>(<span class="c-str">"مریم"</span>)
+<span class="c-fn">print</span>(message)</pre>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">def</span><span class="legend-desc">یعنی «تعریف کن». برای ساختن یک تابع جدید استفاده می‌شود. بعد از <code style="color:var(--blue-bright)">def</code>، اسم تابع و داخل پرانتز پارامترهای ورودی‌اش می‌آید.</span></div>
+          <div class="legend-row"><span class="legend-term">greet</span><span class="legend-desc">اسمی که خودمان برای تابع انتخاب کرده‌ایم؛ هر جا بعداً این اسم را با پرانتز صدا بزنیم، بدنه‌ی تابع اجرا می‌شود.</span></div>
+          <div class="legend-row"><span class="legend-term">return</span><span class="legend-desc">یعنی «برگردان». مقداری که جلوی آن نوشته شده را از تابع بیرون می‌فرستد تا بتوانیم در جای دیگری از آن استفاده کنیم. با اجرای return، تابع فوراً تمام می‌شود.</span></div>
+          <div class="legend-row"><span class="legend-term">greet("مریم")</span><span class="legend-desc">این، <b>فراخوانی (call)</b> تابع است: نام تابع + پرانتز با مقدار ورودی. اینجا "مریم" به‌جای پارامتر name می‌نشیند.</span></div>
+        </div>
+      </div>
+
+      <h3 class="sub">پارامترهای پیش‌فرض، کلیدواژه‌ای و متغیر</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">params.py</span></div>
+        <pre><span class="c-kw">def</span> <span class="c-fn">make_profile</span>(name, age=<span class="c-num">18</span>, *hobbies, **extra):
+    <span class="c-fn">print</span>(<span class="c-fn">f</span><span class="c-str">f"{name} - {age} ساله"</span>)
+    <span class="c-fn">print</span>(<span class="c-str">"سرگرمی‌ها:"</span>, hobbies)
+    <span class="c-fn">print</span>(<span class="c-str">"اطلاعات اضافه:"</span>, extra)
+
+<span class="c-fn">make_profile</span>(<span class="c-str">"نیما"</span>, <span class="c-num">24</span>, <span class="c-str">"شنا"</span>, <span class="c-str">"شطرنج"</span>, city=<span class="c-str">"شیراز"</span>)</pre>
+        <div class="out-block"><span class="out-label">OUTPUT</span>نیما - 24 ساله
+سرگرمی‌ها: ('شنا', 'شطرنج')
+اطلاعات اضافه: {'city': 'شیراز'}</div>
+      </div>
+      <ul class="points">
+        <li><b>پارامتر پیش‌فرض:</b> <code style="color:var(--blue-bright)">age=18</code> — اگر مقدار داده نشود همین را می‌گیرد.</li>
+        <li><b>args*</b> — تعداد نامشخصی آرگومان موقعیتی را به‌صورت تاپل می‌گیرد.</li>
+        <li><b>kwargs**</b> — تعداد نامشخصی آرگومان کلیدواژه‌ای را به‌صورت دیکشنری می‌گیرد.</li>
+      </ul>
+
+      <h3 class="sub">مقدار بازگشتی و توابع بدون return</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">return_demo.py</span></div>
+        <pre><span class="c-kw">def</span> <span class="c-fn">add</span>(a, b):
+    <span class="c-kw">return</span> a + b
+
+<span class="c-kw">def</span> <span class="c-fn">log_action</span>(action):
+    <span class="c-fn">print</span>(<span class="c-fn">f</span><span class="c-str">f"[LOG] {action}"</span>)
+    <span class="c-com"># بدون return → مقدار بازگشتی None است</span>
+
+result = <span class="c-fn">add</span>(<span class="c-num">3</span>, <span class="c-num">4</span>)
+nothing = <span class="c-fn">log_action</span>(<span class="c-str">"ذخیره فایل"</span>)
+<span class="c-fn">print</span>(result, nothing)</pre>
+        <div class="out-block"><span class="out-label">OUTPUT</span>[LOG] ذخیره فایل
+7 None</div>
+      </div>
+
+      <h3 class="sub">Scope: متغیر محلی در برابر سراسری</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">scope.py</span></div>
+        <pre>counter = <span class="c-num">0</span>   <span class="c-com"># متغیر سراسری (global)</span>
+
+<span class="c-kw">def</span> <span class="c-fn">increment</span>():
+    <span class="c-kw">global</span> counter
+    counter += <span class="c-num">1</span>
+
+<span class="c-fn">increment</span>()
+<span class="c-fn">print</span>(counter)  <span class="c-com"># 1</span></pre>
+      </div>
+      <div class="warn">تا حد امکان از <code style="color:var(--blue-bright)">global</code> پرهیز کن؛ تغییر مستقیم متغیر سراسری داخل تابع، دیباگ کردن برنامه‌های بزرگ را سخت می‌کند. بهتر است تابع مقدار را <code style="color:var(--blue-bright)">return</code> کند.</div>
+
+      <h3 class="sub">ساخت و ایمپورت ماژول</h3>
+      <p class="body-text">هر فایل <code style="color:var(--blue-bright)">.py</code> خودش یک ماژول است. می‌توانی توابع یک فایل را در فایل دیگر استفاده کنی.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">math_utils.py</span></div>
+        <pre><span class="c-kw">def</span> <span class="c-fn">square</span>(x):
+    <span class="c-kw">return</span> x * x
+
+<span class="c-kw">def</span> <span class="c-fn">cube</span>(x):
+    <span class="c-kw">return</span> x ** <span class="c-num">3</span></pre>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">main.py</span></div>
+        <pre><span class="c-kw">import</span> math_utils
+<span class="c-kw">from</span> math_utils <span class="c-kw">import</span> cube
+
+<span class="c-fn">print</span>(math_utils.square(<span class="c-num">5</span>))
+<span class="c-fn">print</span>(cube(<span class="c-num">3</span>))</pre>
+        <div class="out-block"><span class="out-label">OUTPUT</span>25
+27</div>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">import</span><span class="legend-desc">یعنی «وارد کن». کل یک ماژول (فایل) دیگر را در دسترس می‌گذارد؛ برای استفاده از توابعش باید جلوی اسم آن‌ها، اسم ماژول و یک نقطه بگذاری (مثل math_utils.square).</span></div>
+          <div class="legend-row"><span class="legend-term">from ... import</span><span class="legend-desc">فقط یک قسمت خاص (مثلاً یک تابع) از ماژول را وارد می‌کند؛ دیگر لازم نیست اسم ماژول را جلویش بیاوری، مستقیم اسم آن تابع (مثل cube) را صدا می‌زنی.</span></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 6 ===================== -->
+    <section class="topic" id="s6">
+      <div class="topic-head"><div class="topic-idx">۶</div><h2>مدیریت پکیج و ماژول‌ها</h2></div>
+      <p class="topic-desc">وقتی پروژه بزرگ‌تر می‌شود، به سازمان‌دهی کد در پکیج‌ها و مدیریت کتابخانه‌های بیرونی با pip نیاز داری.</p>
+
+      <h3 class="sub">پکیج چیست؟</h3>
+      <p class="body-text">پکیج، پوشه‌ای از ماژول‌هاست که شامل یک فایل <code style="color:var(--blue-bright)">__init__.py</code> است (این فایل می‌تواند خالی باشد و فقط به پایتون می‌گوید «این پوشه یک پکیج است»).</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">ساختار پروژه</span></div>
+        <pre>my_project/
+│
+├── shapes/
+│   ├── __init__.py
+│   ├── circle.py
+│   └── square.py
+│
+└── main.py</pre>
+      </div>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">main.py</span></div>
+        <pre><span class="c-kw">from</span> shapes.circle <span class="c-kw">import</span> area_of_circle
+<span class="c-kw">from</span> shapes <span class="c-kw">import</span> square
+
+<span class="c-fn">print</span>(area_of_circle(<span class="c-num">5</span>))
+<span class="c-fn">print</span>(square.area(<span class="c-num">4</span>))</pre>
+      </div>
+
+      <h3 class="sub">مدیریت پکیج‌های بیرونی با pip</h3>
+      <p class="body-text"><code style="color:var(--blue-bright)">pip</code> ابزار رسمی نصب پکیج‌های پایتون از مخزن <a href="#" style="color:var(--yellow-dim)">PyPI</a> است.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">terminal</span></div>
+        <pre>pip install requests           <span class="c-com"># نصب یک پکیج</span>
+pip install requests==2.31.0   <span class="c-com"># نصب نسخه‌ی مشخص</span>
+pip uninstall requests         <span class="c-com"># حذف پکیج</span>
+pip list                       <span class="c-com"># لیست پکیج‌های نصب‌شده</span>
+pip show requests              <span class="c-com"># اطلاعات یک پکیج</span>
+pip freeze > requirements.txt  <span class="c-com"># ذخیره‌ی لیست وابستگی‌ها</span>
+pip install -r requirements.txt <span class="c-com"># نصب همه از روی فایل</span></pre>
+      </div>
+      <div class="tip">فایل <code style="color:var(--blue-bright)">requirements.txt</code> باعث می‌شود هرکسی که پروژه‌ات را می‌گیرد، بتواند دقیقاً همان نسخه‌ی کتابخانه‌ها را با یک دستور نصب کند — این برای کار تیمی حیاتی است.</div>
+
+      <h3 class="sub">__name__ == "__main__"</h3>
+      <p class="body-text">این الگو مشخص می‌کند که آیا فایل مستقیم اجرا شده یا به‌عنوان ماژول ایمپورت شده است.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">app.py</span></div>
+        <pre><span class="c-kw">def</span> <span class="c-fn">main</span>():
+    <span class="c-fn">print</span>(<span class="c-str">"برنامه در حال اجراست"</span>)
+
+<span class="c-kw">if</span> __name__ == <span class="c-str">"__main__"</span>:
+    <span class="c-fn">main</span>()   <span class="c-com"># فقط وقتی این فایل مستقیم اجرا بشه، صدا زده می‌شه</span></pre>
+      </div>
+    </section>
+
+    <!-- ===================== 7 ===================== -->
+    <section class="topic" id="s7">
+      <div class="topic-head"><div class="topic-idx">۷</div><h2>مدیریت خطا</h2></div>
+      <p class="topic-desc">هیچ برنامه‌ای بدون خطا نیست. یاد بگیر چطور خطاها را پیش‌بینی، مدیریت و حتی خودت خطای سفارشی بسازی.</p>
+
+      <h3 class="sub">try / except پایه</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">error_basic.py</span></div>
+        <pre><span class="c-kw">try</span>:
+    number = <span class="c-fn">int</span>(<span class="c-fn">input</span>(<span class="c-str">"یک عدد وارد کن: "</span>))
+    result = <span class="c-num">10</span> / number
+    <span class="c-fn">print</span>(result)
+<span class="c-kw">except</span> ValueError:
+    <span class="c-fn">print</span>(<span class="c-str">"باید یک عدد وارد می‌کردی!"</span>)
+<span class="c-kw">except</span> ZeroDivisionError:
+    <span class="c-fn">print</span>(<span class="c-str">"نمی‌شه بر صفر تقسیم کرد!"</span>)</pre>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">try</span><span class="legend-desc">یعنی «امتحان کن». کدی که ممکن است خطا بدهد را داخل این بلوک می‌گذاری تا اگر خطا رخ داد، برنامه به‌جای کرش‌کردن، کنترل‌شده ادامه پیدا کند.</span></div>
+          <div class="legend-row"><span class="legend-term">except</span><span class="legend-desc">یعنی «به‌جز/مگر». اگر داخل try خطایی از نوع مشخص‌شده رخ دهد، کد داخل همین بلوک اجرا می‌شود به‌جای این‌که برنامه متوقف شود.</span></div>
+          <div class="legend-row"><span class="legend-term">ValueError</span><span class="legend-desc">یک نوع خطای از پیش تعریف‌شده در پایتون؛ وقتی رخ می‌دهد که مقداری با نوع نامناسب داده شود، مثلاً تلاش برای تبدیل متن غیرعددی به عدد.</span></div>
+          <div class="legend-row"><span class="legend-term">ZeroDivisionError</span><span class="legend-desc">نوع دیگری از خطا که وقتی عددی بر صفر تقسیم شود رخ می‌دهد.</span></div>
+        </div>
+      </div>
+
+      <h3 class="sub">else و finally</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">full_try.py</span></div>
+        <pre><span class="c-kw">try</span>:
+    f = <span class="c-fn">open</span>(<span class="c-str">"data.txt"</span>)
+<span class="c-kw">except</span> FileNotFoundError:
+    <span class="c-fn">print</span>(<span class="c-str">"فایل پیدا نشد"</span>)
+<span class="c-kw">else</span>:
+    <span class="c-fn">print</span>(<span class="c-str">"فایل با موفقیت باز شد"</span>)
+    f.close()
+<span class="c-kw">finally</span>:
+    <span class="c-fn">print</span>(<span class="c-str">"این خط همیشه اجرا می‌شه، چه خطا باشه چه نباشه"</span>)</pre>
+      </div>
+      <ul class="points">
+        <li><b>else</b> — فقط وقتی بلاک <code style="color:var(--blue-bright)">try</code> بدون خطا تمام شد اجرا می‌شود.</li>
+        <li><b>finally</b> — همیشه اجرا می‌شود؛ مناسب برای بستن فایل یا اتصال دیتابیس.</li>
+      </ul>
+
+      <h3 class="sub">پرتاب خطای دستی با raise</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">raise_demo.py</span></div>
+        <pre><span class="c-kw">def</span> <span class="c-fn">set_age</span>(age):
+    <span class="c-kw">if</span> age < <span class="c-num">0</span>:
+        <span class="c-kw">raise</span> ValueError(<span class="c-str">"سن نمی‌تونه منفی باشه"</span>)
+    <span class="c-kw">return</span> age
+
+<span class="c-fn">set_age</span>(-<span class="c-num">5</span>)  <span class="c-com"># این خط برنامه رو با ValueError متوقف می‌کنه</span></pre>
+        <div class="out-block"><span class="out-label">OUTPUT</span>Traceback (most recent call last):
+ValueError: سن نمی‌تونه منفی باشه</div>
+      </div>
+
+      <h3 class="sub">ساخت Exception سفارشی</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">custom_exception.py</span></div>
+        <pre><span class="c-kw">class</span> <span class="c-fn">InsufficientBalanceError</span>(Exception):
+    <span class="c-kw">pass</span>
+
+<span class="c-kw">def</span> <span class="c-fn">withdraw</span>(balance, amount):
+    <span class="c-kw">if</span> amount > balance:
+        <span class="c-kw">raise</span> InsufficientBalanceError(<span class="c-str">"موجودی کافی نیست"</span>)
+    <span class="c-kw">return</span> balance - amount
+
+<span class="c-kw">try</span>:
+    <span class="c-fn">withdraw</span>(<span class="c-num">100</span>, <span class="c-num">500</span>)
+<span class="c-kw">except</span> InsufficientBalanceError <span class="c-kw">as</span> e:
+    <span class="c-fn">print</span>(<span class="c-fn">f</span><span class="c-str">f"خطا: {e}"</span>)</pre>
+      </div>
+      <div class="tip">خطاهای سفارشی، کد را خواناتر می‌کنند: به‌جای یک <code style="color:var(--blue-bright)">Exception</code> عمومی، دقیقاً می‌فهمی چه مشکلی رخ داده — مخصوصاً در پروژه‌های بزرگ و API‌ها.</div>
+    </section>
+
+    <!-- ===================== 8 ===================== -->
+    <section class="topic" id="s8">
+      <div class="topic-head"><div class="topic-idx">۸</div><h2>مدیریت فایل با پایتون</h2></div>
+      <p class="topic-desc">خواندن، نوشتن و مدیریت فایل‌های متنی، CSV و JSON — مهارتی که در تقریباً هر پروژه‌ی واقعی لازم می‌شود.</p>
+
+      <h3 class="sub">باز کردن فایل با with (روش استاندارد)</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">write_file.py</span></div>
+        <pre><span class="c-kw">with</span> <span class="c-fn">open</span>(<span class="c-str">"notes.txt"</span>, <span class="c-str">"w"</span>, encoding=<span class="c-str">"utf-8"</span>) <span class="c-kw">as</span> f:
+    f.write(<span class="c-str">"خط اول\n"</span>)
+    f.write(<span class="c-str">"خط دوم\n"</span>)
+<span class="c-com"># با پایان بلوک with، فایل خودکار بسته می‌شه</span></pre>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">open()</span><span class="legend-desc">تابعی که یک فایل را باز می‌کند و یک شیء «فایل» برمی‌گرداند تا بتوانی از آن بخوانی یا در آن بنویسی.</span></div>
+          <div class="legend-row"><span class="legend-term">with ... as f</span><span class="legend-desc"><code style="color:var(--blue-bright)">with</code> یعنی «با/همراه». فایل را باز نگه می‌دارد تا پایان این بلوک تورفته، و بعد خودکار می‌بندد. <code style="color:var(--blue-bright)">as f</code> یعنی به فایل باز‌شده اسم موقت f بده تا بتوانی به آن اشاره کنی.</span></div>
+          <div class="legend-row"><span class="legend-term">f.write()</span><span class="legend-desc">متنی که به آن می‌دهی را داخل فایل می‌نویسد.</span></div>
+        </div>
+      </div>
+      <div class="tip">استفاده از <code style="color:var(--blue-bright)">with</code> بهتر از <code style="color:var(--blue-bright)">open()</code> ساده است، چون حتی اگر خطایی رخ دهد، فایل به‌طور خودکار و امن بسته می‌شود.</div>
+
+      <h3 class="sub">حالت‌های باز کردن فایل</h3>
+      <table class="tbl">
+        <tr><th>حالت</th><th>معنی</th></tr>
+        <tr><td><code>"r"</code></td><td>خواندن (پیش‌فرض)</td></tr>
+        <tr><td><code>"w"</code></td><td>نوشتن؛ محتوای قبلی پاک می‌شود</td></tr>
+        <tr><td><code>"a"</code></td><td>افزودن به انتهای فایل</td></tr>
+        <tr><td><code>"x"</code></td><td>ساخت فایل جدید؛ اگر وجود داشت خطا می‌دهد</td></tr>
+        <tr><td><code>"rb"</code> / <code>"wb"</code></td><td>حالت باینری (عکس، ویدیو و...)</td></tr>
+      </table>
+
+      <h3 class="sub">خواندن فایل به روش‌های مختلف</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">read_file.py</span></div>
+        <pre><span class="c-kw">with</span> <span class="c-fn">open</span>(<span class="c-str">"notes.txt"</span>, <span class="c-str">"r"</span>, encoding=<span class="c-str">"utf-8"</span>) <span class="c-kw">as</span> f:
+    all_text = f.read()          <span class="c-com"># کل فایل به‌صورت یک رشته</span>
+
+<span class="c-kw">with</span> <span class="c-fn">open</span>(<span class="c-str">"notes.txt"</span>, <span class="c-str">"r"</span>, encoding=<span class="c-str">"utf-8"</span>) <span class="c-kw">as</span> f:
+    <span class="c-kw">for</span> line <span class="c-kw">in</span> f:                <span class="c-com"># خط به خط، کارآمد برای فایل‌های بزرگ</span>
+        <span class="c-fn">print</span>(line.strip())</pre>
+      </div>
+
+      <h3 class="sub">کار با JSON</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">json_demo.py</span></div>
+        <pre><span class="c-kw">import</span> json
+
+data = {<span class="c-str">"name"</span>: <span class="c-str">"لیلا"</span>, <span class="c-str">"age"</span>: <span class="c-num">29</span>}
+
+<span class="c-com"># نوشتن دیکشنری پایتون به فایل JSON</span>
+<span class="c-kw">with</span> <span class="c-fn">open</span>(<span class="c-str">"user.json"</span>, <span class="c-str">"w"</span>, encoding=<span class="c-str">"utf-8"</span>) <span class="c-kw">as</span> f:
+    json.dump(data, f, ensure_ascii=<span class="c-kw">False</span>)
+
+<span class="c-com"># خواندن JSON و تبدیل به دیکشنری پایتون</span>
+<span class="c-kw">with</span> <span class="c-fn">open</span>(<span class="c-str">"user.json"</span>, <span class="c-str">"r"</span>, encoding=<span class="c-str">"utf-8"</span>) <span class="c-kw">as</span> f:
+    loaded = json.load(f)
+<span class="c-fn">print</span>(loaded[<span class="c-str">"name"</span>])</pre>
+      </div>
+
+      <h3 class="sub">مسیرها با pathlib (روش مدرن)</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">paths.py</span></div>
+        <pre><span class="c-kw">from</span> pathlib <span class="c-kw">import</span> Path
+
+folder = Path(<span class="c-str">"data"</span>)
+folder.mkdir(exist_ok=<span class="c-kw">True</span>)   <span class="c-com"># ساخت پوشه اگر وجود نداشت</span>
+
+file_path = folder / <span class="c-str">"report.txt"</span>
+<span class="c-fn">print</span>(file_path.exists())     <span class="c-com"># آیا فایل وجود داره؟</span>
+<span class="c-fn">print</span>(file_path.suffix)      <span class="c-com"># پسوند فایل: .txt</span></pre>
+      </div>
+    </section>
+
+    <!-- ===================== 9 ===================== -->
+    <section class="topic" id="s9">
+      <div class="topic-head"><div class="topic-idx">۹</div><h2>ساختارهای تابع‌گرا</h2></div>
+      <p class="topic-desc">برنامه‌نویسی تابعی (Functional Programming) در پایتون: توابع به‌عنوان مقدار، lambda، و ابزارهایی مثل map و filter.</p>
+
+      <h3 class="sub">توابع به‌عنوان شهروند درجه‌یک (First-Class Functions)</h3>
+      <p class="body-text">در پایتون، تابع را می‌توان مثل یک متغیر عادی به تابع دیگر پاس داد، در متغیر ذخیره کرد، یا از تابعی دیگر برگرداند.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">first_class.py</span></div>
+        <pre><span class="c-kw">def</span> <span class="c-fn">shout</span>(text):
+    <span class="c-kw">return</span> text.upper() + <span class="c-str">"!"</span>
+
+<span class="c-kw">def</span> <span class="c-fn">apply_function</span>(func, value):
+    <span class="c-kw">return</span> func(value)
+
+<span class="c-fn">print</span>(<span class="c-fn">apply_function</span>(shout, <span class="c-str">"hello"</span>))  <span class="c-com"># HELLO!</span></pre>
+      </div>
+
+      <h3 class="sub">توابع بی‌نام: lambda</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">lambda_demo.py</span></div>
+        <pre>square = <span class="c-kw">lambda</span> x: x ** <span class="c-num">2</span>
+<span class="c-fn">print</span>(square(<span class="c-num">6</span>))   <span class="c-com"># 36</span>
+
+<span class="c-com"># کاربرد رایج: کلید مرتب‌سازی سفارشی</span>
+people = [(<span class="c-str">"سارا"</span>, <span class="c-num">25</span>), (<span class="c-str">"رضا"</span>, <span class="c-num">19</span>), (<span class="c-str">"مینا"</span>, <span class="c-num">31</span>)]
+people.sort(key=<span class="c-kw">lambda</span> person: person[<span class="c-num">1</span>])
+<span class="c-fn">print</span>(people)   <span class="c-com"># مرتب بر اساس سن</span></pre>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">lambda</span><span class="legend-desc">راهی کوتاه برای ساخت یک تابع «بی‌نام» در یک خط، بدون نیاز به <code style="color:var(--blue-bright)">def</code>. فرمتش: <code style="color:var(--blue-bright)">lambda ورودی: خروجی</code>. معمولاً برای توابع خیلی کوتاه و یک‌بارمصرف استفاده می‌شود.</span></div>
+          <div class="legend-row"><span class="legend-term">sort(key=...)</span><span class="legend-desc">پارامتر <code style="color:var(--blue-bright)">key</code> به sort می‌گوید بر چه اساسی مرتب کند؛ اینجا با lambda گفته‌ایم بر اساس عضو دومِ هر تاپل (سن) مرتب کن.</span></div>
+        </div>
+      </div>
+
+      <h3 class="sub">map ،filter و reduce</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">map_filter.py</span></div>
+        <pre><span class="c-kw">from</span> functools <span class="c-kw">import</span> reduce
+
+numbers = [<span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">3</span>, <span class="c-num">4</span>, <span class="c-num">5</span>]
+
+doubled = <span class="c-fn">list</span>(<span class="c-fn">map</span>(<span class="c-kw">lambda</span> x: x * <span class="c-num">2</span>, numbers))
+<span class="c-fn">print</span>(doubled)      <span class="c-com"># [2, 4, 6, 8, 10]</span>
+
+evens = <span class="c-fn">list</span>(<span class="c-fn">filter</span>(<span class="c-kw">lambda</span> x: x % <span class="c-num">2</span> == <span class="c-num">0</span>, numbers))
+<span class="c-fn">print</span>(evens)        <span class="c-com"># [2, 4]</span>
+
+total = reduce(<span class="c-kw">lambda</span> acc, x: acc + x, numbers)
+<span class="c-fn">print</span>(total)        <span class="c-com"># 15</span></pre>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">map()</span><span class="legend-desc">همان تابع را روی <b>تک‌تک</b> اعضای یک لیست اجرا می‌کند و یک نتیجه‌ی جدید برمی‌گرداند؛ اینجا هر عدد را دوبرابر می‌کند.</span></div>
+          <div class="legend-row"><span class="legend-term">filter()</span><span class="legend-desc">فقط عضوهایی از لیست را نگه می‌دارد که تابع شرط برایشان True برگرداند؛ بقیه دور ریخته می‌شوند.</span></div>
+          <div class="legend-row"><span class="legend-term">reduce()</span><span class="legend-desc">همه‌ی اعضای لیست را دو‌تا‌دوتا با هم ترکیب می‌کند تا به یک مقدار نهایی برسد؛ اینجا همه را جمع می‌زند.</span></div>
+          <div class="legend-row"><span class="legend-term">list()</span><span class="legend-desc">نتیجه‌ی map و filter به‌طور پیش‌فرض به‌شکل قابل چاپ ساده نیست؛ با list() آن را به یک لیست معمولی تبدیل می‌کنیم.</span></div>
+        </div>
+      </div>
+
+      <h3 class="sub">تابع مولد (Generator) و yield</h3>
+      <p class="body-text">جنریتور به‌جای برگرداندن همه‌ی مقادیر یک‌جا، مقادیر را یکی‌یکی و «تنبل» (Lazy) تولید می‌کند — برای داده‌های حجیم بسیار بهینه است.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">generator.py</span></div>
+        <pre><span class="c-kw">def</span> <span class="c-fn">count_up_to</span>(limit):
+    n = <span class="c-num">1</span>
+    <span class="c-kw">while</span> n <= limit:
+        <span class="c-kw">yield</span> n
+        n += <span class="c-num">1</span>
+
+<span class="c-kw">for</span> number <span class="c-kw">in</span> <span class="c-fn">count_up_to</span>(<span class="c-num">5</span>):
+    <span class="c-fn">print</span>(number)</pre>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">yield</span><span class="legend-desc">شبیه <code style="color:var(--blue-bright)">return</code> است، اما به‌جای تمام‌کردن تابع، فقط یک مقدار را «موقتاً» برمی‌گرداند و محل خودش را به خاطر می‌سپارد؛ دفعه‌ی بعد که تابع صدا زده شود، دقیقاً از همان‌جا ادامه می‌دهد.</span></div>
+          <div class="legend-row"><span class="legend-term">تابع مولد</span><span class="legend-desc">هر تابعی که داخلش حداقل یک <code style="color:var(--blue-bright)">yield</code> داشته باشد، به‌جای اجرای معمولی، یک «جنریتور» می‌سازد که مقادیر را یکی‌یکی و در لحظه تولید می‌کند، نه همه را یک‌جا در حافظه.</span></div>
+        </div>
+      </div>
+
+      <h3 class="sub">دکوریتور (Decorator)</h3>
+      <p class="body-text">دکوریتور تابعی است که تابع دیگری را می‌گیرد و رفتار آن را بدون تغییر کد اصلی‌اش، گسترش می‌دهد.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">decorator.py</span></div>
+        <pre><span class="c-kw">import</span> time
+
+<span class="c-kw">def</span> <span class="c-fn">timer</span>(func):
+    <span class="c-kw">def</span> <span class="c-fn">wrapper</span>(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        <span class="c-fn">print</span>(<span class="c-fn">f</span><span class="c-str">f"{func.__name__} در {time.time()-start:.4f} ثانیه اجرا شد"</span>)
+        <span class="c-kw">return</span> result
+    <span class="c-kw">return</span> wrapper
+
+<span class="c-fn">@timer</span>
+<span class="c-kw">def</span> <span class="c-fn">slow_task</span>():
+    time.sleep(<span class="c-num">1</span>)
+
+<span class="c-fn">slow_task</span>()</pre>
+      </div>
+    </section>
+
+    <!-- ===================== 10 ===================== -->
+    <section class="topic" id="s10">
+      <div class="topic-head"><div class="topic-idx">۱۰</div><h2>شئ‌گرایی در پایتون</h2></div>
+      <p class="topic-desc">برنامه‌نویسی شئ‌گرا (OOP) روشی برای مدل‌سازی دنیای واقعی در کد است: کلاس‌ها، اشیاء، وراثت و چندریختی.</p>
+
+      <h3 class="sub">کلاس و شیء</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">class_basic.py</span></div>
+        <pre><span class="c-kw">class</span> <span class="c-fn">Dog</span>:
+    <span class="c-kw">def</span> <span class="c-fn">__init__</span>(self, name, breed):
+        self.name = name        <span class="c-com"># attribute (ویژگی)</span>
+        self.breed = breed
+
+    <span class="c-kw">def</span> <span class="c-fn">bark</span>(self):              <span class="c-com"># method (متد)</span>
+        <span class="c-kw">return</span> <span class="c-fn">f</span><span class="c-str">f"{self.name} گفت: واق واق!"</span>
+
+my_dog = Dog(<span class="c-str">"رکس"</span>, <span class="c-str">"ژرمن شپرد"</span>)   <span class="c-com"># نمونه‌سازی (instantiation)</span>
+<span class="c-fn">print</span>(my_dog.bark())</pre>
+        <div class="out-block"><span class="out-label">OUTPUT</span>رکس گفت: واق واق!</div>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">class</span><span class="legend-desc">یعنی «کلاس». یک قالب/نقشه برای ساخت اشیاء مشابه تعریف می‌کند؛ مثلاً کلاس Dog، نقشه‌ی همه‌ی سگ‌هاست، نه یک سگ خاص.</span></div>
+          <div class="legend-row"><span class="legend-term">__init__</span><span class="legend-desc">متد «سازنده» (constructor). به‌محض ساخته‌شدن یک شیء جدید از کلاس، این متد خودکار اجرا می‌شود و مقدارهای اولیه را تنظیم می‌کند.</span></div>
+          <div class="legend-row"><span class="legend-term">self</span><span class="legend-desc">اشاره‌گر به «خودِ شیء». همیشه اولین پارامتر هر متد است و اجازه می‌دهد داخل کلاس به ویژگی‌های همان شیء (مثل self.name) دسترسی داشته باشیم.</span></div>
+          <div class="legend-row"><span class="legend-term">Dog("رکس"...)</span><span class="legend-desc">این خط یک <b>شیء (object)</b> واقعی از روی کلاس Dog می‌سازد؛ به این کار <b>نمونه‌سازی (instantiation)</b> می‌گویند.</span></div>
+          <div class="legend-row"><span class="legend-term">my_dog.bark()</span><span class="legend-desc">برای صدا زدن متد یک شیء، بعد از نام شیء یک نقطه می‌گذاریم و اسم متد را با پرانتز می‌آوریم.</span></div>
+        </div>
+      </div>
+
+      <h3 class="sub">وراثت (Inheritance)</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">inheritance.py</span></div>
+        <pre><span class="c-kw">class</span> <span class="c-fn">Animal</span>:
+    <span class="c-kw">def</span> <span class="c-fn">__init__</span>(self, name):
+        self.name = name
+
+    <span class="c-kw">def</span> <span class="c-fn">speak</span>(self):
+        <span class="c-kw">return</span> <span class="c-str">"..."</span>
+
+<span class="c-kw">class</span> <span class="c-fn">Cat</span>(Animal):                <span class="c-com"># Cat از Animal ارث‌بری می‌کنه</span>
+    <span class="c-kw">def</span> <span class="c-fn">speak</span>(self):             <span class="c-com"># override کردن متد والد</span>
+        <span class="c-kw">return</span> <span class="c-fn">f</span><span class="c-str">f"{self.name} می‌گه: میو!"</span>
+
+c = Cat(<span class="c-str">"پیشی"</span>)
+<span class="c-fn">print</span>(c.speak())</pre>
+      </div>
+      <div class="legend">
+        <div class="legend-head">این کد چیکار می‌کنه؟</div>
+        <div class="legend-rows">
+          <div class="legend-row"><span class="legend-term">class Cat(Animal)</span><span class="legend-desc">پرانتز جلوی نام کلاس یعنی «کلاس والد» (parent). این یعنی Cat همه‌ی ویژگی‌ها و متدهای Animal را به ارث می‌برد و می‌تواند چیزهای بیشتری هم به آن‌ها اضافه یا آن‌ها را تغییر دهد.</span></div>
+          <div class="legend-row"><span class="legend-term">override</span><span class="legend-desc">وقتی کلاس فرزند متدی با همان اسم متد والد تعریف می‌کند تا رفتار آن را جایگزین کند؛ اینجا Cat متد speak را دوباره‌نویسی کرده است.</span></div>
+        </div>
+      </div>
+
+      <h3 class="sub">چندریختی (Polymorphism)</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">polymorphism.py</span></div>
+        <pre>animals = [Cat(<span class="c-str">"میو"</span>), Animal(<span class="c-str">"ناشناس"</span>)]
+
+<span class="c-kw">for</span> a <span class="c-kw">in</span> animals:
+    <span class="c-fn">print</span>(a.speak())   <span class="c-com"># هرکدوم رفتار خودشون رو دارن، با یک اینترفیس یکسان</span></pre>
+      </div>
+
+      <h3 class="sub">Encapsulation و property</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">encapsulation.py</span></div>
+        <pre><span class="c-kw">class</span> <span class="c-fn">BankAccount</span>:
+    <span class="c-kw">def</span> <span class="c-fn">__init__</span>(self, balance):
+        self.__balance = balance   <span class="c-com"># __ یعنی private (محافظت‌شده)</span>
+
+    <span class="c-fn">@property</span>
+    <span class="c-kw">def</span> <span class="c-fn">balance</span>(self):
+        <span class="c-kw">return</span> self.__balance
+
+    <span class="c-kw">def</span> <span class="c-fn">deposit</span>(self, amount):
+        <span class="c-kw">if</span> amount > <span class="c-num">0</span>:
+            self.__balance += amount
+
+acc = BankAccount(<span class="c-num">1000</span>)
+acc.deposit(<span class="c-num">500</span>)
+<span class="c-fn">print</span>(acc.balance)   <span class="c-com"># 1500 — دسترسی کنترل‌شده به موجودی</span></pre>
+      </div>
+
+      <h3 class="sub">متدهای جادویی (Dunder Methods)</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">dunder.py</span></div>
+        <pre><span class="c-kw">class</span> <span class="c-fn">Vector</span>:
+    <span class="c-kw">def</span> <span class="c-fn">__init__</span>(self, x, y):
+        self.x, self.y = x, y
+
+    <span class="c-kw">def</span> <span class="c-fn">__add__</span>(self, other):        <span class="c-com"># عملگر + رو تعریف می‌کنه</span>
+        <span class="c-kw">return</span> Vector(self.x + other.x, self.y + other.y)
+
+    <span class="c-kw">def</span> <span class="c-fn">__str__</span>(self):             <span class="c-com"># چطور با print نمایش داده بشه</span>
+        <span class="c-kw">return</span> <span class="c-fn">f</span><span class="c-str">f"Vector({self.x}, {self.y})"</span>
+
+v1, v2 = Vector(<span class="c-num">1</span>, <span class="c-num">2</span>), Vector(<span class="c-num">3</span>, <span class="c-num">4</span>)
+<span class="c-fn">print</span>(v1 + v2)   <span class="c-com"># Vector(4, 6)</span></pre>
+      </div>
+    </section>
+
+    <!-- ===================== 11 ===================== -->
+    <section class="topic" id="s11">
+      <div class="topic-head"><div class="topic-idx">۱۱</div><h2>ایزوله‌سازی محیط توسعه</h2></div>
+      <p class="topic-desc">محیط مجازی (Virtual Environment) به هر پروژه اجازه می‌دهد کتابخانه‌های خودش را جدا از پروژه‌های دیگر داشته باشد — بدون تداخل نسخه.</p>
+
+      <h3 class="sub">چرا محیط مجازی لازم است؟</h3>
+      <p class="body-text">فرض کن پروژه‌ی A به نسخه‌ی ۱ یک کتابخانه نیاز دارد و پروژه‌ی B به نسخه‌ی ۲ همان کتابخانه. اگر همه چیز را روی سیستم نصب کنی، این دو با هم تداخل پیدا می‌کنند. محیط مجازی این مشکل را با ساختن یک نصب مجزای پایتون برای هر پروژه حل می‌کند.</p>
+
+      <h3 class="sub">ساخت و فعال‌سازی venv</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">terminal</span></div>
+        <pre><span class="c-com"># ساخت محیط مجازی به نام venv</span>
+python -m venv venv
+
+<span class="c-com"># فعال‌سازی در ویندوز</span>
+venv\Scripts\activate
+
+<span class="c-com"># فعال‌سازی در macOS / Linux</span>
+source venv/bin/activate
+
+<span class="c-com"># حالا نصب پکیج فقط داخل این محیط انجام می‌شه</span>
+pip install pandas
+
+<span class="c-com"># خروج از محیط مجازی</span>
+deactivate</pre>
+      </div>
+      <div class="tip">وقتی محیط مجازی فعال است، نام آن معمولاً در ابتدای خط ترمینال، داخل پرانتز، نشان داده می‌شود؛ مثل <code style="color:var(--blue-bright)">(venv) user@machine:~$</code>.</div>
+
+      <h3 class="sub">ابزارهای جایگزین</h3>
+      <table class="tbl">
+        <tr><th>ابزار</th><th>ویژگی</th></tr>
+        <tr><td><code>venv</code></td><td>داخل خود پایتون است، سبک و ساده</td></tr>
+        <tr><td><code>virtualenv</code></td><td>مشابه venv اما با قابلیت‌های بیشتر و پشتیبانی از نسخه‌های قدیمی‌تر</td></tr>
+        <tr><td><code>conda</code></td><td>مدیریت محیط + پکیج، حتی برای زبان‌های غیر از پایتون؛ محبوب در علم داده</td></tr>
+        <tr><td><code>poetry</code></td><td>مدیریت وابستگی + بسته‌بندی + انتشار پروژه، همه یکجا</td></tr>
+      </table>
+
+      <h3 class="sub">فایل .gitignore برای محیط مجازی</h3>
+      <p class="body-text">پوشه‌ی محیط مجازی هرگز نباید داخل Git قرار بگیرد؛ چون حجیم است و قابل بازسازی از روی <code style="color:var(--blue-bright)">requirements.txt</code>.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">.gitignore</span></div>
+        <pre>venv/
+__pycache__/
+*.pyc
+.env</pre>
+      </div>
+    </section>
+
+    <!-- ===================== 12 ===================== -->
+    <section class="topic" id="s12">
+      <div class="topic-head"><div class="topic-idx">۱۲</div><h2>ارتباط با وب و مدیریت درخواست</h2></div>
+      <p class="topic-desc">چطور با پایتون به سرویس‌های دیگر درخواست بفرستی، پاسخ JSON بگیری و حتی یک API ساده خودت بسازی.</p>
+
+      <h3 class="sub">ارسال درخواست GET با requests</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">get_request.py</span></div>
+        <pre><span class="c-kw">import</span> requests
+
+response = requests.get(<span class="c-str">"https://api.example.com/users/1"</span>)
+
+<span class="c-fn">print</span>(response.status_code)   <span class="c-com"># مثلاً 200</span>
+data = response.json()             <span class="c-com"># تبدیل پاسخ JSON به دیکشنری پایتون</span>
+<span class="c-fn">print</span>(data[<span class="c-str">"name"</span>])</pre>
+      </div>
+
+      <h3 class="sub">درخواست POST با داده و هدر</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">post_request.py</span></div>
+        <pre><span class="c-kw">import</span> requests
+
+payload = {<span class="c-str">"title"</span>: <span class="c-str">"یادداشت جدید"</span>, <span class="c-str">"done"</span>: <span class="c-kw">False</span>}
+headers = {<span class="c-str">"Authorization"</span>: <span class="c-str">"Bearer TOKEN_HERE"</span>}
+
+response = requests.post(
+    <span class="c-str">"https://api.example.com/todos"</span>,
+    json=payload,
+    headers=headers,
+    timeout=<span class="c-num">5</span>
+)
+
+<span class="c-kw">if</span> response.ok:
+    <span class="c-fn">print</span>(<span class="c-str">"با موفقیت ارسال شد"</span>)
+<span class="c-kw">else</span>:
+    <span class="c-fn">print</span>(<span class="c-fn">f</span><span class="c-str">f"خطا: {response.status_code}"</span>)</pre>
+      </div>
+      <div class="tip">همیشه <code style="color:var(--blue-bright)">timeout</code> بگذار تا اگر سرور جواب نداد، برنامه‌ات برای همیشه منتظر نماند.</div>
+
+      <h3 class="sub">مدیریت خطای شبکه</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">safe_request.py</span></div>
+        <pre><span class="c-kw">import</span> requests
+
+<span class="c-kw">try</span>:
+    response = requests.get(<span class="c-str">"https://api.example.com/data"</span>, timeout=<span class="c-num">5</span>)
+    response.raise_for_status()   <span class="c-com"># اگه کد وضعیت خطا باشه، Exception پرتاب می‌کنه</span>
+<span class="c-kw">except</span> requests.exceptions.Timeout:
+    <span class="c-fn">print</span>(<span class="c-str">"درخواست خیلی طول کشید"</span>)
+<span class="c-kw">except</span> requests.exceptions.ConnectionError:
+    <span class="c-fn">print</span>(<span class="c-str">"اتصال به اینترنت برقرار نیست"</span>)
+<span class="c-kw">except</span> requests.exceptions.HTTPError <span class="c-kw">as</span> e:
+    <span class="c-fn">print</span>(<span class="c-fn">f</span><span class="c-str">f"خطای سرور: {e}"</span>)</pre>
+      </div>
+
+      <h3 class="sub">ساخت یک API ساده با FastAPI</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">api.py</span></div>
+        <pre><span class="c-kw">from</span> fastapi <span class="c-kw">import</span> FastAPI
+
+app = FastAPI()
+
+<span class="c-fn">@app.get</span>(<span class="c-str">"/hello/{name}"</span>)
+<span class="c-kw">def</span> <span class="c-fn">say_hello</span>(name: <span class="c-fn">str</span>):
+    <span class="c-kw">return</span> {<span class="c-str">"message"</span>: <span class="c-fn">f</span><span class="c-str">f"سلام {name}!"</span>}
+
+<span class="c-com"># اجرا با: uvicorn api:app --reload</span></pre>
+      </div>
+      <div class="tip">این سرویس بعد از اجرا، در آدرس <code style="color:var(--blue-bright)">http://127.0.0.1:8000/hello/سارا</code> پاسخ JSON برمی‌گرداند. FastAPI برای شروع API‌نویسی در پایتون بسیار محبوب و سریع است.</div>
+    </section>
+
+    <!-- ===================== 13 ===================== -->
+    <section class="topic" id="s13">
+      <div class="topic-head"><div class="topic-idx">۱۳</div><h2>آشنایی با مباحث Clean Code</h2></div>
+      <p class="topic-desc">نوشتن کدی که کار می‌کند کافی نیست؛ کد باید برای انسان دیگری (یا خودت در ۶ ماه دیگر) هم قابل‌فهم باشد.</p>
+
+      <h3 class="sub">نام‌گذاری معنادار</h3>
+      <div class="grid2">
+        <div class="card">
+          <h4>❌ بد</h4>
+          <pre style="padding:0; font-size:13px;">d = 5
+<span class="c-kw">def</span> <span class="c-fn">calc</span>(x, y):
+    <span class="c-kw">return</span> x * y * d</pre>
+        </div>
+        <div class="card">
+          <h4>✅ خوب</h4>
+          <pre style="padding:0; font-size:13px;">discount_rate = <span class="c-num">5</span>
+<span class="c-kw">def</span> <span class="c-fn">calculate_total_price</span>(price, quantity):
+    <span class="c-kw">return</span> price * quantity * discount_rate</pre>
+        </div>
+      </div>
+
+      <h3 class="sub">اصل تک‌مسئولیتی (Single Responsibility)</h3>
+      <p class="body-text">هر تابع باید فقط یک کار انجام دهد و آن را خوب انجام دهد. اگر توضیح دادن کار یک تابع نیاز به «و» زیاد دارد، احتمالاً باید آن را بشکنی.</p>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">srp.py</span></div>
+        <pre><span class="c-com"># به‌جای یک تابع بزرگ که همه‌کار انجام می‌ده:</span>
+<span class="c-kw">def</span> <span class="c-fn">validate_email</span>(email):
+    <span class="c-kw">return</span> <span class="c-str">"@"</span> <span class="c-kw">in</span> email
+
+<span class="c-kw">def</span> <span class="c-fn">save_user</span>(user):
+    <span class="c-com"># فقط ذخیره‌سازی، نه اعتبارسنجی و نه ایمیل زدن</span>
+    <span class="c-kw">pass</span>
+
+<span class="c-kw">def</span> <span class="c-fn">send_welcome_email</span>(user):
+    <span class="c-kw">pass</span></pre>
+      </div>
+
+      <h3 class="sub">DRY: Don't Repeat Yourself</h3>
+      <p class="body-text">اگر یک منطق را بیش از یک‌بار کپی‌پیست می‌کنی، آن را در یک تابع جدا کن. تکرار کد یعنی هر باگ باید در چند جا فیکس شود.</p>
+
+      <h3 class="sub">Docstring و Type Hints</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">documented.py</span></div>
+        <pre><span class="c-kw">def</span> <span class="c-fn">calculate_bmi</span>(weight: <span class="c-fn">float</span>, height: <span class="c-fn">float</span>) -> <span class="c-fn">float</span>:
+    <span class="c-str">"""
+    محاسبه‌ی شاخص توده بدنی (BMI)
+
+    Args:
+        weight: وزن به کیلوگرم
+        height: قد به متر
+
+    Returns:
+        مقدار BMI به‌صورت عدد اعشاری
+    """</span>
+    <span class="c-kw">return</span> weight / (height ** <span class="c-num">2</span>)</pre>
+      </div>
+      <div class="tip"><b>Type Hint</b>ها (مثل <code style="color:var(--blue-bright)">weight: float</code>) اجباری نیستند اما به ابزارهایی مثل VSCode و mypy کمک می‌کنند خطاهای احتمالی را زودتر پیدا کنند.</div>
+
+      <h3 class="sub">PEP 8: استاندارد رسمی سبک نوشتن</h3>
+      <ul class="points">
+        <li>استفاده از <b>۴ فاصله</b> برای تورفتگی، نه تب.</li>
+        <li>نام متغیر و تابع: <code style="color:var(--blue-bright)">snake_case</code></li>
+        <li>نام کلاس: <code style="color:var(--blue-bright)">PascalCase</code></li>
+        <li>نام ثابت‌ها: <code style="color:var(--blue-bright)">ALL_CAPS</code></li>
+        <li>حداکثر طول خط: معمولاً ۷۹ تا ۹۹ کاراکتر</li>
+        <li>دو خط خالی بین تعریف کلاس‌ها و توابع سطح بالا</li>
+      </ul>
+      <div class="tip">ابزار <code style="color:var(--blue-bright)">black</code> یا <code style="color:var(--blue-bright)">ruff</code> را نصب کن تا کدت به‌طور خودکار طبق PEP 8 فرمت شود — دیگر نیازی نیست نگران فاصله‌گذاری باشی.</div>
+    </section>
+
+    <!-- ===================== 14 ===================== -->
+    <section class="topic" id="s14">
+      <div class="topic-head"><div class="topic-idx">۱۴</div><h2>ماژول‌های پرکاربرد</h2></div>
+      <p class="topic-desc">کتابخانه‌های استاندارد و محبوب که در پروژه‌های واقعی مدام استفاده می‌شوند.</p>
+
+      <h3 class="sub">datetime — کار با تاریخ و زمان</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">datetime_demo.py</span></div>
+        <pre><span class="c-kw">from</span> datetime <span class="c-kw">import</span> datetime, timedelta
+
+now = datetime.now()
+<span class="c-fn">print</span>(now.strftime(<span class="c-str">"%Y-%m-%d %H:%M"</span>))
+
+next_week = now + timedelta(days=<span class="c-num">7</span>)
+<span class="c-fn">print</span>(next_week.strftime(<span class="c-str">"%A"</span>))   <span class="c-com"># نام روز هفته</span></pre>
+      </div>
+
+      <h3 class="sub">random — تصادفی‌سازی</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">random_demo.py</span></div>
+        <pre><span class="c-kw">import</span> random
+
+<span class="c-fn">print</span>(random.randint(<span class="c-num">1</span>, <span class="c-num">10</span>))          <span class="c-com"># عدد صحیح تصادفی</span>
+<span class="c-fn">print</span>(random.choice([<span class="c-str">"سنگ"</span>, <span class="c-str">"کاغذ"</span>, <span class="c-str">"قیچی"</span>]))
+cards = [<span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">3</span>, <span class="c-num">4</span>, <span class="c-num">5</span>]
+random.shuffle(cards)             <span class="c-com"># به‌هم‌ریختن ترتیب لیست</span></pre>
+      </div>
+
+      <h3 class="sub">os و sys — تعامل با سیستم‌عامل</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">os_demo.py</span></div>
+        <pre><span class="c-kw">import</span> os
+
+<span class="c-fn">print</span>(os.getcwd())              <span class="c-com"># مسیر فعلی</span>
+<span class="c-fn">print</span>(os.listdir(<span class="c-str">"."</span>))         <span class="c-com"># لیست فایل‌های پوشه</span>
+<span class="c-fn">print</span>(os.environ.get(<span class="c-str">"PATH"</span>))  <span class="c-com"># متغیرهای محیطی</span></pre>
+      </div>
+
+      <h3 class="sub">re — عبارات باقاعده (Regex)</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">regex_demo.py</span></div>
+        <pre><span class="c-kw">import</span> re
+
+text = <span class="c-str">"ایمیل من ali@example.com هست"</span>
+match = re.search(<span class="c-str">r"[\w.]+@[\w.]+"</span>, text)
+<span class="c-kw">if</span> match:
+    <span class="c-fn">print</span>(match.group())   <span class="c-com"># ali@example.com</span></pre>
+      </div>
+
+      <h3 class="sub">collections — ساختارهای داده‌ی پیشرفته</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">collections_demo.py</span></div>
+        <pre><span class="c-kw">from</span> collections <span class="c-kw">import</span> Counter, defaultdict
+
+words = [<span class="c-str">"سیب"</span>, <span class="c-str">"موز"</span>, <span class="c-str">"سیب"</span>, <span class="c-str">"سیب"</span>, <span class="c-str">"موز"</span>]
+<span class="c-fn">print</span>(Counter(words))   <span class="c-com"># Counter({'سیب': 3, 'موز': 2})</span>
+
+groups = defaultdict(<span class="c-fn">list</span>)
+groups[<span class="c-str">"میوه"</span>].append(<span class="c-str">"سیب"</span>)  <span class="c-com"># نیازی به چک کردن وجود کلید نیست</span></pre>
+      </div>
+
+      <h3 class="sub">کتابخانه‌های پرکاربرد بیرونی</h3>
+      <table class="tbl">
+        <tr><th>کتابخانه</th><th>کاربرد</th></tr>
+        <tr><td><code>requests</code></td><td>درخواست HTTP</td></tr>
+        <tr><td><code>pandas</code></td><td>تحلیل و پردازش داده‌ی جدولی</td></tr>
+        <tr><td><code>numpy</code></td><td>محاسبات عددی و آرایه‌ای سریع</td></tr>
+        <tr><td><code>flask / fastapi</code></td><td>ساخت وب‌سرویس و API</td></tr>
+        <tr><td><code>pytest</code></td><td>نوشتن تست خودکار</td></tr>
+        <tr><td><code>matplotlib</code></td><td>رسم نمودار</td></tr>
+      </table>
+    </section>
+
+    <!-- ===================== 15 ===================== -->
+    <section class="topic" id="s15">
+      <div class="topic-head"><div class="topic-idx">۱۵</div><h2>توضیحات تکمیلی</h2></div>
+      <p class="topic-desc">چند نکته‌ی مهم و پرکاربرد که در فصل‌های بالا نگنجید اما دانستنشان مسیر یادگیری‌ات را کامل‌تر می‌کند.</p>
+
+      <h3 class="sub">مدیریت حافظه و Garbage Collection</h3>
+      <p class="body-text">پایتون حافظه را به‌صورت خودکار مدیریت می‌کند. وقتی هیچ متغیری به یک شیء اشاره نکند، جمع‌کننده‌ی زباله (Garbage Collector) آن را از حافظه پاک می‌کند — نیازی به آزادسازی دستی حافظه مثل C نیست.</p>
+
+      <h3 class="sub">Mutable در برابر Immutable</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">mutability.py</span></div>
+        <pre>a = [<span class="c-num">1</span>, <span class="c-num">2</span>, <span class="c-num">3</span>]
+b = a          <span class="c-com"># b به همون شیء اشاره می‌کنه، نه کپی جدید</span>
+b.append(<span class="c-num">4</span>)
+<span class="c-fn">print</span>(a)      <span class="c-com"># [1, 2, 3, 4] ← a هم تغییر کرد!</span>
+
+x = <span class="c-num">5</span>
+y = x
+y += <span class="c-num">1</span>
+<span class="c-fn">print</span>(x)      <span class="c-com"># 5 ← اعداد immutable هستن، تغییر نمی‌کنن</span></pre>
+      </div>
+      <div class="warn">این یکی از رایج‌ترین منابع باگ برای تازه‌کارهاست: لیست، دیکشنری و شیء از کلاس‌های سفارشی <b>Mutable</b> هستند و با کپی ساده اشتراک حافظه دارند. برای کپی واقعی از <code style="color:var(--blue-bright)">list(a)</code> یا ماژول <code style="color:var(--blue-bright)">copy</code> استفاده کن.</div>
+
+      <h3 class="sub">Type Hinting پیشرفته‌تر</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">typing_demo.py</span></div>
+        <pre><span class="c-kw">from</span> typing <span class="c-kw">import</span> List, Optional, Dict
+
+<span class="c-kw">def</span> <span class="c-fn">get_names</span>(users: List[Dict[<span class="c-fn">str</span>, <span class="c-fn">str</span>]]) -> List[<span class="c-fn">str</span>]:
+    <span class="c-kw">return</span> [u[<span class="c-str">"name"</span>] <span class="c-kw">for</span> u <span class="c-kw">in</span> users]
+
+<span class="c-kw">def</span> <span class="c-fn">find_user</span>(user_id: <span class="c-fn">int</span>) -> Optional[<span class="c-fn">str</span>]:
+    <span class="c-kw">return</span> <span class="c-kw">None</span>   <span class="c-com"># یعنی ممکنه str برگردونه یا None</span></pre>
+      </div>
+
+      <h3 class="sub">نوشتن تست با pytest</h3>
+      <div class="code-wrap">
+        <div class="code-bar"><div class="dots"><span></span><span></span><span></span></div><span class="fname">test_math.py</span></div>
+        <pre><span class="c-kw">def</span> <span class="c-fn">add</span>(a, b):
+    <span class="c-kw">return</span> a + b
+
+<span class="c-kw">def</span> <span class="c-fn">test_add</span>():
+    <span class="c-kw">assert</span> <span class="c-fn">add</span>(<span class="c-num">2</span>, <span class="c-num">3</span>) == <span class="c-num">5</span>
+    <span class="c-kw">assert</span> <span class="c-fn">add</span>(-<span class="c-num">1</span>, <span class="c-num">1</span>) == <span class="c-num">0</span>
+
+<span class="c-com"># اجرا با: pytest test_math.py</span></pre>
+      </div>
+
+      <h3 class="sub">نقشه‌ی راه بعد از این دوره</h3>
+      <ul class="points">
+        <li><b>یک پروژه‌ی کوچک واقعی بساز</b> — مثل مدیریت کارها (To-Do)، یک بازی متنی یا اسکرپر ساده.</li>
+        <li><b>Git و GitHub</b> یاد بگیر تا کدت را نسخه‌بندی و منتشر کنی.</li>
+        <li>یک مسیر تخصصی انتخاب کن: <b>توسعه وب</b> (Django/FastAPI)، <b>علم داده</b> (Pandas/NumPy) یا <b>اتوماسیون</b> (اسکریپت‌نویسی).</li>
+        <li>کد بقیه را بخوان — پروژه‌های متن‌باز روی GitHub منبع یادگیری فوق‌العاده‌ای هستند.</li>
+      </ul>
+      <div class="tip">بهترین راه یادگیری پایتون، <b>نوشتن کد</b> است، نه فقط خواندن. سعی کن هر مثال این صفحه را خودت در محیط پایتون تایپ و اجرا کنی — تایپ کردن، حافظه‌ی عضلانی مهمی برای برنامه‌نویسی می‌سازد.</div>
+    </section>
+
+    <footer>
+      <div class="fline"></div>
+      این مرجع تمام ۱۵ سرفصل درخواستی را با توضیح مفهومی و مثال کد پوشش می‌دهد؛ برای تمرین بیشتر، هر بخش را در محیط پایتون خودت اجرا کن.
+    </footer>
+
+  </main>
+</div>
+
+<script>
+  // Highlight active nav item on scroll
+  const sections = document.querySelectorAll('section.topic');
+  const navLinks = document.querySelectorAll('#navlist a');
+  const map = {};
+  navLinks.forEach(a => map[a.getAttribute('href').slice(1)] = a);
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      const link = map[entry.target.id];
+      if (!link) return;
+      if (entry.isIntersecting) {
+        navLinks.forEach(a => a.classList.remove('active'));
+        link.classList.add('active');
+      }
+    });
+  }, { rootMargin: '-15% 0px -70% 0px', threshold: 0 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+</body>
+</html>
